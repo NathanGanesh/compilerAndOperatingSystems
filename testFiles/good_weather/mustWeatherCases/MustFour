@@ -1,0 +1,11 @@
+int guess;
+guess = 4;
+int answer1;
+Text feedback = "Wrong answer";
+answer1 = scanInt();
+
+while(answer1 != guess) {
+print(feedback);
+answer1 = scanInt();
+}
+print("Correct");

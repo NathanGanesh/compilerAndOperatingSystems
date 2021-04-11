@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="antlr4-runtime-4.9.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/antlr4-runtime-4.9.1.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/hamcrest-core-1.3.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/system-rules-1.19.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

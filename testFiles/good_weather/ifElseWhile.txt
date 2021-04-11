@@ -1,0 +1,16 @@
+
+//Infinite loop anything that can result in a true statement in a while loop can make it execute.
+while(1==1){
+print("oek oek");
+}
+
+// If statements work the same as a while loop. If you can make it result in a true it will  execute the code inside the block.
+if(5!=999){
+print("well OEKOEK");}
+// If else block
+if(5==292){
+print("oek");
+}else{
+print("WELL no oekoek");
+}
+

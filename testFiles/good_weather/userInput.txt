@@ -1,0 +1,9 @@
+// Ask int.
+int oek = askInt();
+// Ask double
+double oek = askDouble();
+// Ask boolean
+boolean oek = askBoolean();
+// Ask text
+Text oek = askText();
+

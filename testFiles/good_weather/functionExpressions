@@ -1,0 +1,20 @@
+// Create a test function(global scope)
+int oekPlusOek(int oekInt){
+return oekInt + 5;
+}
+// Adding value together from other function
+int oekP(){
+return oekPlusOek(123) + 5;
+}
+// Double function
+double oekDouble(){
+return 1.0*5.0;
+}
+// Boolean expression return
+boolean oek(boolean oekBool){
+return oekBool;
+}
+// Complex boolean expression
+boolean y(int oek1, int oek2){
+return oek(oek1==oek2);
+}
