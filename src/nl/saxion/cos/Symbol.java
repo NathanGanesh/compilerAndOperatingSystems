@@ -9,6 +9,8 @@ public class Symbol {
         this.name = name;
         this.type = type;
         this.localSlot = localSlot;
+        System.out.println(name);
+        System.out.println(localSlot);
     }
 
     public String getName() {

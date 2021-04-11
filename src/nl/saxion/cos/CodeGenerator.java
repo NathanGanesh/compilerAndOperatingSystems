@@ -2,6 +2,8 @@ package nl.saxion.cos;
 
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
+import static nl.saxion.cos.DataType.getFunctionDescriptor;
+
 public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
     private final JasminBytecode jasminCode;
@@ -123,19 +125,28 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         }
         return null;
     }
-//
-//    @Override
-//    public Void visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
-//        sym
-//
-//        jasminCode.add(".method public static " + ctx.IDENTIFIER().getText() + "(" +
-//                getArgumentSequence() + ")" + getTypeDescriptor(getDataType()))
-//                .add(".limit stack 99")
-//                .add(".limit locals 99");
-//
-//        visitChildren(ctx.argument_list());
-//        return null;
-//    }
+
+    @Override
+    public Void visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
+        StringBuilder arguments = new StringBuilder();
+
+        for (int i = 0; i < ctx.argument_list().declaration().size(); i++) {
+            arguments.append(getFunctionDescriptor(ctx.argument_list().declaration().get(i).TYPE().getText()));
+        }
+
+        System.out.println(arguments);
+
+        jasminCode.add(".method public static " + ctx.IDENTIFIER().getText() +
+                "(" + arguments + ")" + getFunctionDescriptor(ctx.TYPE().getText()));
+        jasminCode.add(".limit stack 99");
+        jasminCode.add(".limit locals 99");
+
+        visit(ctx.block());
+
+        jasminCode.add(DataType.getFunctionReturn(ctx.TYPE().getText()) + "return");
+        jasminCode.add(".end method");
+        return null;
+    }
 
     @Override
     public Void visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
@@ -171,7 +182,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = scope.get(ctx).lookUp(name);
-       //first visit any expression this is because an assignment could be an expression
+        //first visit any expression this is because an assignment could be an expression
         if ((ctx.expr()) != null) {
             visit(ctx.expr());
         }
@@ -241,7 +252,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
                 jasminCode.add("istore " + symbol.getLocalSlot());
                 break;
             case TEXT:
-                jasminCode.add("ldc empty");
+                jasminCode.add("ldc \"empty\"");
                 jasminCode.add("astore " + symbol.getLocalSlot());
                 break;
             default:
@@ -259,7 +270,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         //scanner symbol
         String scannerText = ctx.SCANNER().getText();
         Symbol symbol = scope.get(ctx).lookUp(scannerText);
-    //if scanner doesnt exist add a scanner isnt scoped.
+        //if scanner doesnt exist add a scanner isnt scoped.
         if (!scanInit) {
             jasminCode.add("new java/util/Scanner");
             jasminCode.add("dup");
