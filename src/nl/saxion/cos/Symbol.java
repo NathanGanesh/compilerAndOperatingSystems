@@ -19,7 +19,19 @@ public class Symbol {
         return type;
     }
 
+
+    @Override
+    public String toString() {
+        return "Symbol{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", localSlot=" + localSlot +
+                '}';
+    }
+
     public int getLocalSlot() {
         return localSlot;
     }
 }
+
+

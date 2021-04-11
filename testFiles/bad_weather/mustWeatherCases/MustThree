@@ -1,8 +1,8 @@
 boolean test;
 int answer1;
-answer1 = insertInt();
+answer1 = scanInt();
 int answer2;
-answer2 = insertInt();
+answer2 = scanInt();
 test =  answer1 > answer2 || answer2 < 0;
 if (test) {
     print("You mad a mistake");
