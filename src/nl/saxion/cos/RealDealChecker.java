@@ -44,6 +44,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     }
 
 
+
     @Override
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
@@ -62,6 +63,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUpLocal(name);
         DataType type = symbol.getType();
+
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
@@ -90,13 +92,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 }
                 break;
         }
-//        if (symbolTable.getParentScope() == null) {
-//            // Global variable, i.e. static data member of class Main.
-//            symbolTable.addGlobal(name, type);
-//        } else {
-//            // Local variable, so assign a slot.
-//        }
-        symbolTable.add(name, type);
+
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
@@ -110,6 +106,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (leftType != rightType) {
             throw new CompilerException("Left and right type are not the same!");
         }
+        System.out.println(leftType);
         if (!(leftType == DataType.DOUBLE || leftType == INT)) {
             throw new CompilerException("Not double or int");
         }
@@ -129,6 +126,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (!(leftType == DataType.DOUBLE || leftType == INT)) {
             throw new CompilerException("Not double or int");
         }
+        System.out.println(ctx.getText() + "here2");
         dataTypes.put(ctx, BOOLEAN);
         scope.put(ctx, symbolTable);
         return addType(ctx, BOOLEAN);
@@ -138,6 +136,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitLogicalExpr(TheRealDealLangParser.LogicalExprContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
+        System.out.println("compare");
         if (leftType != BOOLEAN && rightType != BOOLEAN) {
             throw new CompilerException("Left or right not boolean");
         }
@@ -145,6 +144,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
             throw new CompilerException("Left and right type are not the same!");
         }
 
+        System.out.println(ctx.getText());
         scope.put(ctx, symbolTable);
         return addType(ctx, BOOLEAN);
     }
@@ -254,6 +254,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitBlock(TheRealDealLangParser.BlockContext ctx) {
+        System.out.println("got hit3213213");
         scope.put(ctx, symbolTable);
         symbolTable = symbolTable.openScope();
 
@@ -263,6 +264,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
         symbolTable = symbolTable.getParentScope();
         return null;
+
     }
 
 
@@ -273,6 +275,11 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         symbolTable.add(ctx.SCANNER().getText(), dataType);
         scope.put(ctx, symbolTable);
         return dataType;
+    }
+
+    @Override
+    public DataType visitDeclaration(TheRealDealLangParser.DeclarationContext ctx) {
+        return super.visitDeclaration(ctx);
     }
 
     @Override
