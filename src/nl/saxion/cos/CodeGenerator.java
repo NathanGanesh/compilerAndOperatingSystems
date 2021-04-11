@@ -123,11 +123,31 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         }
         return null;
     }
+//
+//    @Override
+//    public Void visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
+//        sym
+//
+//        jasminCode.add(".method public static " + ctx.IDENTIFIER().getText() + "(" +
+//                getArgumentSequence() + ")" + getTypeDescriptor(getDataType()))
+//                .add(".limit stack 99")
+//                .add(".limit locals 99");
+//
+//        visitChildren(ctx.argument_list());
+//        return null;
+//    }
+
+    @Override
+    public Void visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
+        return null;
+    }
 
     @Override
     public Void visitPrintCallStatement(TheRealDealLangParser.PrintCallStatementContext ctx) {
         jasminCode.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
         visit(ctx.expr());
+
+        System.out.println(ctx.expr());
         switch (types.get(ctx.expr())) {
             case INT:
                 jasminCode.add("invokevirtual java/io/PrintStream/println(I)V");

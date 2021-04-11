@@ -362,6 +362,13 @@ public class CompilerTest {
     }
 
     @Test
+    public void t() throws AssembleException, IOException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/oek/test1.sl", "test1");
+        List<String> result = runCode(bytecode);
+        assertEquals("1337", result.get(0));
+    }
+
+    @Test
     public void mustFour() throws AssembleException, IOException {
         JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFour", "MustFour");
 

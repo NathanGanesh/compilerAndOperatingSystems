@@ -7,7 +7,6 @@ compileUnit
 statement
     :   block                                                                                        # blockStmt
     | function_definition                #functionDefinitionStamenet
-    | function_call SEMICOLON            #functionCallStatement
     |   type=TYPE name=IDENTIFIER  SEMICOLON                                              # varDeclStmt
     |   type=TYPE name=IDENTIFIER (ASSIGN expr)*? SEMICOLON                               # initStmt
     |   IDENTIFIER ASSIGN expr SEMICOLON                                                                # assignVarStmt
@@ -17,7 +16,6 @@ statement
     |   WHILE condition block                                                                # whileStmt
     |   stmtExpr=expr SEMICOLON                                                               # exprStmt
     ;
-
 
 block
     :   START_BLOCK statement* END_BLOCK
@@ -29,14 +27,13 @@ expr
     |   value=DOUBLE                                                                        # doubleExpr
     |   value=(TRUE|FALSE)                                                                  # booleanExpr
     |   value=IDENTIFIER                                                                    # variableExpr
-    |   func=IDENTIFIER '(' (expr (COMMA expr)*)? ')'                       # funcExpr
+    |   IDENTIFIER '(' expression_list? ')'                                                 # funcExpr
     |   left=expr op=(MUL|DIVIDE) right=expr                                                # exMulExpr
     |   left=expr op=(ADD | SUB) right=expr                                                 # addsubExpr
     |   left=expr cpr=(BIGGER_THEN|GREATER_THAN_AND_EQUAL|SMALLER_THEN|LOWER_THAN_AND_EQUAL) right=expr    # compareExpr
     |   left=expr cpr=(NOT_EQUALS|EQUALS) right=expr                                        # equalExpr
     |   left=expr op=AND right=expr                                                         # logicalExpr
     |   left=expr op=OR right=expr                                                          # logicalExpr
-    | function_call                       #functionCallExpr
     | TEXT_VALUE                                                                            # textExpr
     | SCANNER                                                                               # scannerExpr
     | '(' expr ')'                                                        # parensExpr
@@ -44,11 +41,10 @@ expr
 
 condition           : '(' expr+ ')';
 function_definition: TYPE IDENTIFIER '(' argument_list? ')' block;
+argument_list: declaration (',' declaration)*;
 declaration
     :   TYPE IDENTIFIER
     ;
-argument_list: declaration (',' declaration)*;
-function_call: IDENTIFIER '(' expression_list? ')';
 expression_list: expr (',' expr)*;
 
 MUL         : '*';

@@ -110,14 +110,14 @@ public class SymbolTable {
     }
 
     public DataType getTypeEnum(String type) {
-        switch (type) {
+        switch (type.toLowerCase()) {
             case "int":
                 return DataType.INT;
             case "double":
                 return DataType.DOUBLE;
             case "boolean":
                 return DataType.BOOLEAN;
-            case "Text":
+            case "text":
                 return DataType.TEXT;
             case "void":
                 return DataType.VOID;
@@ -147,4 +147,7 @@ public class SymbolTable {
         return parentScope;
     }
 
+    public HashMap<String, Symbol> getSymbols() {
+        return symbols;
+    }
 }
