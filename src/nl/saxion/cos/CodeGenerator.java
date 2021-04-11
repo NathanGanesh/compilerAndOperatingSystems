@@ -151,7 +151,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = scope.get(ctx).lookUp(name);
-       //first visit any expression this is because an assignment could be an expression
+        //first visit any expression this is because an assignment could be an expression
         if ((ctx.expr()) != null) {
             visit(ctx.expr());
         }
@@ -221,7 +221,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
                 jasminCode.add("istore " + symbol.getLocalSlot());
                 break;
             case TEXT:
-                jasminCode.add("ldc empty");
+                jasminCode.add("ldc \"empty\"" );
                 jasminCode.add("astore " + symbol.getLocalSlot());
                 break;
             default:
@@ -239,7 +239,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         //scanner symbol
         String scannerText = ctx.SCANNER().getText();
         Symbol symbol = scope.get(ctx).lookUp(scannerText);
-    //if scanner doesnt exist add a scanner isnt scoped.
+        //if scanner doesnt exist add a scanner isnt scoped.
         if (!scanInit) {
             jasminCode.add("new java/util/Scanner");
             jasminCode.add("dup");

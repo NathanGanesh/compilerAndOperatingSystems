@@ -43,6 +43,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     }
 
 
+
     @Override
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
@@ -59,7 +60,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUpLocal(name);
-        DataType type = symbolTable.getTypeEnum(ctx.IDENTIFIER().getText());
+        DataType type = symbol.getType();
 
         switch (ctx.expr().getText()) {
             case "scanInt()":
@@ -89,13 +90,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 }
                 break;
         }
-        if (symbolTable.getParentScope() == null) {
-            // Global variable, i.e. static data member of class Main.
-            symbolTable.addGlobal(name, type);
-        } else {
-            // Local variable, so assign a slot.
-            symbolTable.add(name, type);
-        }
+
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
@@ -109,6 +104,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (leftType != rightType) {
             throw new CompilerException("Left and right type are not the same!");
         }
+        System.out.println(leftType);
         if (!(leftType == DataType.DOUBLE || leftType == INT)) {
             throw new CompilerException("Not double or int");
         }
@@ -269,6 +265,11 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         symbolTable.add(ctx.SCANNER().getText(), dataType);
         scope.put(ctx, symbolTable);
         return visit(ctx.SCANNER());
+    }
+
+    @Override
+    public DataType visitDeclaration(TheRealDealLangParser.DeclarationContext ctx) {
+        return super.visitDeclaration(ctx);
     }
 
     @Override
