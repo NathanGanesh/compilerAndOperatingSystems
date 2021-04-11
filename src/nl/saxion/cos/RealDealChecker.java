@@ -3,19 +3,14 @@ package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-
 import static nl.saxion.cos.DataType.*;
 
 public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
-    private boolean failed = false;
     private final ParseTreeProperty<DataType> dataTypes;
-    private SymbolTable symbolTable;
     private final ParseTreeProperty<SymbolTable> scope;
-
-    public boolean isFailed() {
-        return failed;
-    }
+    private boolean failed = false;
+    private SymbolTable symbolTable;
 
     public RealDealChecker(ParseTreeProperty<DataType> dataTypes, SymbolTable symbolTable, ParseTreeProperty<SymbolTable> scope) {
         this.dataTypes = dataTypes;
@@ -23,6 +18,9 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         this.scope = scope;
     }
 
+    public boolean isFailed() {
+        return failed;
+    }
 
     @Override
     public DataType visitBooleanExpr(TheRealDealLangParser.BooleanExprContext ctx) {
@@ -45,8 +43,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     }
 
 
-
-
     @Override
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
@@ -54,7 +50,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (symbol == null) {
             throw new CompilerException("Use of variable " + name + " before declaration");
         }
-        System.out.println(ctx.IDENTIFIER().getText() + "hey3123213");
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
@@ -65,24 +60,13 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUpLocal(name);
         DataType type = symbolTable.getTypeEnum(ctx.IDENTIFIER().getText());
-        System.out.println("NOTWORKING"+type);
-        if (symbol != null) {
-            throw  new CompilerException("Variable " + name + "already defined.");
-        }
-
-
-        String exprText = ctx.expr().getText();
-        System.out.println(ctx.getText());
-        System.out.println("got hit here");
 
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
                     throw new CompilerException("Incompatiple datatypes");
-                } else {
-                    System.out.println(ctx.getText());
-                    visit(ctx.expr());
                 }
+                visit(ctx.expr());
                 break;
             case "scanText()":
                 if (symbol.getType() != TEXT) {
@@ -112,8 +96,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
             // Local variable, so assign a slot.
             symbolTable.add(name, type);
         }
-
-        System.out.println(ctx.getText());
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
@@ -130,7 +112,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (!(leftType == DataType.DOUBLE || leftType == INT)) {
             throw new CompilerException("Not double or int");
         }
-        System.out.println(ctx.getText() + "here2");
         dataTypes.put(ctx, BOOLEAN);
         scope.put(ctx, symbolTable);
         return addType(ctx, BOOLEAN);
@@ -201,8 +182,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         scope.put(ctx, symbolTable);
         return symbolTable.lookUp(name).getType();
     }
-
-
 
 
     @Override
@@ -318,7 +297,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         symbolTable.add(name, type);
 
         // Associate the this node with the current scope.
-        scope.put(ctx,symbolTable);
+        scope.put(ctx, symbolTable);
 
         // Visit the arguments and body in the new scope and restore the current scope afterwards.
         symbolTable = symbolTable.openFunctionScope();
@@ -331,7 +310,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     @Override
     public DataType visitFunction_call(TheRealDealLangParser.Function_callContext ctx) {
         String identifier = ctx.IDENTIFIER().getText();
-        System.out.println(identifier+"id");
+        System.out.println(identifier + "id");
         // Decorate the function name with argument types and return type. Do this prior to visiting the arguments
         // themselves as this will enter them in the symbol table of the new scope. Start with the arguments
         String name = identifier + '@';
@@ -346,7 +325,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 if (!(",".equals(expr.getText()))) {
                     System.out.println(expr.getText() + " kek");
                     System.out.println(dataTypes.get(expr) + "SMEK");
-                    System.out.println(symbolTable.getTypeLetter(dataTypes.get(expr))+" asdjkl");
+                    System.out.println(symbolTable.getTypeLetter(dataTypes.get(expr)) + " asdjkl");
                     name += symbolTable.getTypeLetter(dataTypes.get(expr));
                 }
             }
@@ -355,11 +334,11 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         Symbol symbol = symbolTable.lookUp(name);
 
         if (symbol == null) {
-            String typeDescritors = name.substring(name.indexOf('@')+1);
+            String typeDescritors = name.substring(name.indexOf('@') + 1);
             String message = "function " + identifier + "(";
 
             boolean firstArg = true;
-            for(char c : typeDescritors.toCharArray()) {
+            for (char c : typeDescritors.toCharArray()) {
                 if (firstArg) {
                     firstArg = false;
                 } else {
@@ -384,7 +363,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     @Override
     public DataType visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
         String identifier = ctx.IDENTIFIER().getText();
-        System.out.println(identifier+"ïd");
+        System.out.println(identifier + "ïd");
         // Decorate the function name with argument types and return type. Do this prior to visiting the arguments
 
         // themselves as this will enter them in the symbol table of the new scope. Start with the arguments
@@ -401,7 +380,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 // Skip the comma that separates expressions.
                 System.out.println(expr.getText() + "ek");
 //                System.out.println(dataTypes.get(expr.getChild(0)) + "sas");
-                System.out.println(symbolTable.getTypeLetter2(expr.getText())+ " asdio[p ");
+                System.out.println(symbolTable.getTypeLetter2(expr.getText()) + " asdio[p ");
 //                    symbolTable.getTypeLetter2()
 //                    name += symbolTable.getTypeLetter2(dataTypes.get(expr));
 
@@ -498,8 +477,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
-        System.out.println(ctx.block() + "hey");
-        System.out.println(visit(ctx.condition().expr(0)) + "typ[e123");
         for (int i = 0; i < ctx.condition().expr().size(); i++) {
             DataType type = visit(ctx.condition().expr(i));
             if (type != BOOLEAN) {
