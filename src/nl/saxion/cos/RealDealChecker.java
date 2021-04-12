@@ -92,7 +92,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 visit(ctx.expr());
                 break;
         }
-
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
@@ -195,6 +194,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (symbol != null) {
             throw new CompilerException("Use of variable " + name + " Is already in use");
         }
+        //check if datatypes are the same on the lefts and right side
         if (ctx.expr() != null) {
             String type = ctx.TYPE().getText().toUpperCase();
             for (int i = 0; i < ctx.expr().size(); i++) {
@@ -255,15 +255,12 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitBlock(TheRealDealLangParser.BlockContext ctx) {
-        System.out.println("got hit3213213");
         scope.put(ctx, symbolTable);
         symbolTable = symbolTable.openScope();
         visitChildren(ctx);
         symbolTable = symbolTable.getParentScope();
         return null;
-
     }
-
 
 
     @Override
@@ -314,6 +311,10 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         return type;
     }
 
+    /**Copy pasted from seminars
+     * @param ctx
+     * @return
+     */
     @Override
     public DataType visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
         String identifier = ctx.IDENTIFIER().getText();
@@ -350,7 +351,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 } else {
                     message.append(',');
                 }
-
                 message.append(symbolTable.getTypeName(c));
             }
 
@@ -367,18 +367,19 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitIfStatement(TheRealDealLangParser.IfStatementContext ctx) {
+        //check if everything is boolean
         for (int i = 0; i < ctx.condition().expr().size(); i++) {
             DataType type = visit(ctx.condition().expr(i));
-
             if (type != BOOLEAN) {
                 throw new CompilerException("no type of boolean");
             }
         }
-
+        //if only statement
         if (ctx.falseBlock == null) {
             visit(ctx.trueBlock);
             scope.put(ctx, symbolTable);
         } else {
+            //else statement and if statement
             visit(ctx.trueBlock);
             visit(ctx.falseBlock);
             dataTypes.put(ctx.trueBlock, BOOLEAN);
@@ -400,6 +401,12 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         return type;
     }
 
+    /**
+     * Removes the scan
+     *
+     * @param command The scanner to get the dataype of
+     * @return the datatype of the scanner.
+     */
     public DataType extractDataType(String command) {
         String type = command.substring(4, (command.length() - 2));
         switch (type) {
@@ -419,13 +426,14 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
+        //check if all the conditions are boolean
         for (int i = 0; i < ctx.condition().expr().size(); i++) {
             DataType type = visit(ctx.condition().expr(i));
             if (type != BOOLEAN) {
                 throw new CompilerException("no type of boolean");
             }
         }
-
+        //visit the condition and the block
         visit(ctx.condition());
         visit(ctx.block());
         return null;

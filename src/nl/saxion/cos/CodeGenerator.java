@@ -1,8 +1,11 @@
 package nl.saxion.cos;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import static nl.saxion.cos.DataType.getFunctionDescriptor;
+import javax.xml.crypto.Data;
+
+import static nl.saxion.cos.DataType.*;
 
 public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
@@ -103,7 +106,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     @Override
     public Void visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
         StringBuilder arguments = new StringBuilder();
-
+        //get all function statements
         for (int i = 0; i < ctx.argument_list().declaration().size(); i++) {
             arguments.append(getFunctionDescriptor(ctx.argument_list().declaration().get(i).TYPE().getText()));
         }
@@ -152,6 +155,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         return null;
     }
 
+
     @Override
     public Void visitBlock(TheRealDealLangParser.BlockContext ctx) {
         for (int i = 0; i < ctx.statement().size(); i++) {
@@ -162,6 +166,34 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
     @Override
     public Void visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
+        String name = ctx.IDENTIFIER().getText();
+        StringBuilder arguments = new StringBuilder();
+        for (ParseTree expr : ctx.expression_list().children) {
+            if (!(",".equals(expr.getText()))) {
+                arguments.append(getTypeLetter(types.get(expr)));
+            }
+        }
+        Symbol symbol = scope.get(ctx).lookUp(name + "@" + arguments);
+
+
+
+//            System.out.println(arguments + "arguemtnsd123");
+//
+////            System.out.println(expr.getText());
+//            System.out.println(types.get(expr) + "asdf");
+//            System.out.println();
+
+
+//        for (int i = 0; i < ctx.expression_list().children; i++) {
+//
+//            System.out.println((ctx.expression_list().expr().get(i)).getChild(0) + "hey");
+////            System.out.println(ctx.expression_list().expr().get(i).getText());
+////            arguments.append(getFunctionDescriptor(ctx.expression_list().expr().get(i).().getText()));
+//        }
+
+//        System.out.println(symbol.getName()+"namer123");
+
+        System.out.println("funcexpr");
         return null;
     }
 
@@ -194,6 +226,8 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = scope.get(ctx).lookUp(name);
+        //should be lookuplocal when function
+//        Symbol symbol = scope.get(ctx).lookUpLocal()k(name);
         //first visit any expression this is because an assignment could be an expression
         if ((ctx.expr()) != null) {
             visit(ctx.expr());
@@ -222,7 +256,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitInitStmt(TheRealDealLangParser.InitStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = scope.get(ctx).lookUp(name);
-        //visit any expressions before storing anything
+        //visit all the expresions of the init statement before storing it
         for (int i = 0; i < ctx.expr().size(); i++) {
             visit(ctx.expr().get(i));
         }
@@ -282,7 +316,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         //scanner symbol
         String scannerText = ctx.SCANNER().getText();
         Symbol symbol = scope.get(ctx).lookUp(scannerText);
-        //if scanner doesnt exist add a scanner isnt scoped.
+        //if scanner doesnt exist and a scanner isnt scoped add one.
         if (!scanInit) {
             jasminCode.add("new java/util/Scanner");
             jasminCode.add("dup");
@@ -315,11 +349,12 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitIfStatement(TheRealDealLangParser.IfStatementContext ctx) {
         String trueLabel = "trueLabel" + ctx.hashCode();
         String falseLabel = "falseLabel" + ctx.hashCode();
-
+        //visit if condition
         visit(ctx.condition());
 
         jasminCode.add("ifne " + trueLabel);
 
+        //if there is an else statement visit it
         if (ctx.falseBlock != null) {
             visit(ctx.falseBlock);
         }
@@ -336,11 +371,13 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
         String endLabel = "end" + ctx.hashCode();
         jasminCode.add("begin:");
+        //visit all conditions
         for (int i = 0; i < ctx.condition().expr().size(); i++) {
             visit(ctx.condition().expr(i));
         }
         jasminCode.add("iconst_1");
         jasminCode.add("if_icmpne " + endLabel);
+        //vist all the statement inside the while
         for (int i = 0; i < ctx.block().statement().size(); i++) {
             visit(ctx.block().statement(i));
         }
@@ -360,6 +397,8 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
         if (types.get(ctx.left) == DataType.DOUBLE) {
             boolean lessThan = comparison.equals("<");
+            //if true <
+            // else >
             jasminCode.add("dcmp" + (lessThan ? "l" : "g"));
             jasminCode.add("if" + (lessThan ? "le " : "gt ") + trueLabel);
         } else if (types.get(ctx.left) == DataType.INT) {
@@ -387,10 +426,14 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         final String comparison = ctx.cpr.getText();
         boolean equals = comparison.equals("==");
         if (types.get(ctx.left) == DataType.DOUBLE) {
+            // if true ==
+            // , else !=
             jasminCode.add("dcmp" + (equals ? "g" : "l"));
             jasminCode.add("if" + (equals ? "le " : "gt ") + trueLabel);
         } else {
             String a = types.get(ctx.left) == DataType.INT ? "i" : "a";
+            // if true ==
+            // , else !=
             jasminCode.add("if_" + a +
                     "cmp" + (comparison.equals("==") ? "eq " : "ne ") + trueLabel);
         }
@@ -417,6 +460,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
             jasminCode.add("if_icmpeq " + trueLabel);
             jasminCode.add("iconst_0");
         } else {
+            //else ||
             jasminCode.add("iadd");
             jasminCode.add("ifne " + trueLabel);
             jasminCode.add("iconst_0");
