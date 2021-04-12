@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.contrib.java.lang.system.TextFromStandardInputStream.emptyStandardInputStream;
 
 
@@ -28,258 +27,321 @@ import static org.junit.contrib.java.lang.system.TextFromStandardInputStream.emp
  * Not shown is a  test where the file contains no syntax errors, but the checker should find some
  * error. You can of course add that yourself.
  */
-
 public class CompilerTest {
 
     @Rule // Used for mocking the scanner input
     public final TextFromStandardInputStream systemInMock = emptyStandardInputStream();
 
-	@Test
-	public void test0() throws Exception {
+    @Test
+    public void test0() throws Exception {
         JasminBytecode bytecode = compile("testFiles/good_weather/oek/test0.sl", "test0");
         List<String> result = runCode(bytecode);
         assertEquals("1337", result.get(0));
-	}
+    }
 
 
-	@Test
-	public void test1() throws Exception {
-		Compiler c = new Compiler();
-		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test1.sl", "Test1");
+    @Test
+    public void test1() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test1.sl", "Test1");
 
-		assertArrayEquals( new String[] {
-				".class public Test1",
-				".super java/lang/Object",
-				"",
-				".method public static main([Ljava/lang/String;)V",
-				".limit stack 99",
-				".limit locals 99",
-				"",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"ldc 1",
-				"ldc 2",
-				"iadd",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"ldc 3",
-				"ldc 4",
-				"ldc 5",
-				"imul",
-				"iadd",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"ldc \"Hi\"",
-				"invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V",
-				"return",
-				".end method"
-		}, code.getLines().toArray() );
+        assertArrayEquals(new String[]{
+                ".class public Test1",
+                ".super java/lang/Object",
+                "",
+                ".method public static main([Ljava/lang/String;)V",
+                ".limit stack 99",
+                ".limit locals 99",
+                "",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "ldc 1",
+                "ldc 2",
+                "iadd",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "ldc 3",
+                "ldc 4",
+                "ldc 5",
+                "imul",
+                "iadd",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "ldc \"Hi\"",
+                "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V",
+                "return",
+                ".end method"
+        }, code.getLines().toArray());
 
-		AssembledClass aClass = AssembledClass.assemble(code);
-		SandBox s = new SandBox();
-		s.runClass(aClass);
-		List<String> output = s.getOutput();
+        AssembledClass aClass = AssembledClass.assemble(code);
+        SandBox s = new SandBox();
+        s.runClass(aClass);
+        List<String> output = s.getOutput();
 
-		assertArrayEquals(new String[] {
-				"3",
-				"23",
-				"Hi"
-		}, output.toArray());
-	}
-//
-	@Test
-	public void test2a() throws Exception {
-		Compiler c = new Compiler();
-		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test2a.sl", "Test2");
+        assertArrayEquals(new String[]{
+                "3",
+                "23",
+                "Hi"
+        }, output.toArray());
+    }
 
-		assertArrayEquals( new String[] {
-				".class public Test2",
-				".super java/lang/Object",
-				"",
-				".method public static main([Ljava/lang/String;)V",
-				".limit stack 99",
-				".limit locals 99",
-				"",
-				"ldc 0",
-				"istore 1",
-				"ldc 123",
-				"istore 1",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 1",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"return",
-				".end method"
-		}, code.getLines().toArray() );
+    //
+    @Test
+    public void test2a() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test2a.sl", "Test2");
 
-		AssembledClass aClass = AssembledClass.assemble(code);
-		SandBox s = new SandBox();
-		s.runClass(aClass);
-		List<String> output = s.getOutput();
+        assertArrayEquals(new String[]{
+                ".class public Test2",
+                ".super java/lang/Object",
+                "",
+                ".method public static main([Ljava/lang/String;)V",
+                ".limit stack 99",
+                ".limit locals 99",
+                "",
+                "ldc 0",
+                "istore 1",
+                "ldc 123",
+                "istore 1",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 1",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "return",
+                ".end method"
+        }, code.getLines().toArray());
 
-		assertArrayEquals(new String[] {
-				"123"
-		}, output.toArray());
-	}
-//
-	@Test
-	public void test2b() throws Exception {
-		Compiler c = new Compiler();
-		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test2b.sl", "Test2");
+        AssembledClass aClass = AssembledClass.assemble(code);
+        SandBox s = new SandBox();
+        s.runClass(aClass);
+        List<String> output = s.getOutput();
 
-		assertArrayEquals( new String[] {
-				".class public Test2",
-				".super java/lang/Object",
-				"",
-				".method public static main([Ljava/lang/String;)V",
-				".limit stack 99",
-				".limit locals 99",
-				"",
-				"ldc \"empty\"",
-				"astore 1",
-				"ldc \"Hello World\"",
-				"astore 1",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"aload 1",
-				"invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V",
-				"return",
-				".end method"
-		}, code.getLines().toArray() );
+        assertArrayEquals(new String[]{
+                "123"
+        }, output.toArray());
+    }
 
-		AssembledClass aClass = AssembledClass.assemble(code);
-		SandBox s = new SandBox();
-		s.runClass(aClass);
-		List<String> output = s.getOutput();
+    //
+    @Test
+    public void test2b() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test2b.sl", "Test2");
 
-		assertArrayEquals(new String[] {
-				"Hello World"
-		}, output.toArray());
-	}
+        assertArrayEquals(new String[]{
+                ".class public Test2",
+                ".super java/lang/Object",
+                "",
+                ".method public static main([Ljava/lang/String;)V",
+                ".limit stack 99",
+                ".limit locals 99",
+                "",
+                "ldc \"empty\"",
+                "astore 1",
+                "ldc \"Hello World\"",
+                "astore 1",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "aload 1",
+                "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V",
+                "return",
+                ".end method"
+        }, code.getLines().toArray());
 
-//
-//
-	@Test
-	public void test3b() throws Exception {
-		Compiler c = new Compiler();
-		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test3b.sl", "Test3");
+        AssembledClass aClass = AssembledClass.assemble(code);
+        SandBox s = new SandBox();
+        s.runClass(aClass);
+        List<String> output = s.getOutput();
 
-		assertArrayEquals( new String[] {
-				".class public Test3",
-				".super java/lang/Object",
-				"",
-				".method public static main([Ljava/lang/String;)V",
-				".limit stack 99",
-				".limit locals 99",
-				"",
-				"ldc 1",
-				"istore 1",
-				"ldc 2",
-				"istore 2",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 1",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 2",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 1",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"return",
-				".end method"
-		}, code.getLines().toArray() );
+        assertArrayEquals(new String[]{
+                "Hello World"
+        }, output.toArray());
+    }
 
-		AssembledClass aClass = AssembledClass.assemble(code);
-		SandBox s = new SandBox();
-		s.runClass(aClass);
-		List<String> output = s.getOutput();
+    @Test
+    public void test3a() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test3a.sl", "Test3");
+        assertArrayEquals(new String[]{
+                ".class public Test3",
+                ".super java/lang/Object",
+                "",
+                ".method public static main([Ljava/lang/String;)V",
+                ".limit stack 99",
+                ".limit locals 99",
+                "",
+                "ldc 0",
+                "istore 1",
+                "ldc 1",
+                "istore 1",
+                "ldc 0",
+                "istore 2",
+                "ldc 2",
+                "istore 2",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 1",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 2",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 1",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "return",
+                ".end method"
+        }, code.getLines().toArray());
 
-		assertArrayEquals(new String[] {
-				"1",
-				"2",
-				"1"
-		}, output.toArray());
-	}
+        AssembledClass aClass = AssembledClass.assemble(code);
+        SandBox s = new SandBox();
+        s.runClass(aClass);
+        List<String> output = s.getOutput();
 
-	@Test
-	public void test3test() throws Exception {
-		Compiler c = new Compiler();
-		JasminBytecode code = c.compileFile("testFiles/prog.txt", "prog");
-		System.out.println(Arrays.toString(code.getLines().toArray()));
-		assertArrayEquals( new String[] {
-				".class public Test3",
-				".super java/lang/Object",
-				"",
-				".method public static main([Ljava/lang/String;)V",
-				".limit stack 99",
-				".limit locals 99",
-				"",
-				"ldc 1",
-				"istore 1",
-				"ldc 2",
-				"istore 2",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 1",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 2",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"getstatic java/lang/System/out Ljava/io/PrintStream;",
-				"iload 1",
-				"invokevirtual java/io/PrintStream/println(I)V",
-				"return",
-				".end method"
-		}, code.getLines().toArray() );
+        assertArrayEquals(new String[]{
+                "1",
+                "2",
+                "1"
+        }, output.toArray());
 
-		AssembledClass aClass = AssembledClass.assemble(code);
-		SandBox s = new SandBox();
-		s.runClass(aClass);
-		List<String> output = s.getOutput();
-		System.out.println(Arrays.toString(output.toArray()));
 
-		assertArrayEquals(new String[] {
-				"1",
-				"2",
-				"1"
-		}, output.toArray());
-	}
+    }
 
-//	@Test
-//	void test4a() throws Exception {
-//		Compiler c = new Compiler();
-//		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test4a.sl", "Test4");
-//		assertNull(code); // Should not compile
-//	}
-//	@Test
-//	void test4b() throws Exception {
-//		Compiler c = new Compiler();
-//		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test4b.sl", "Test4");
-//		assertNull(code); // Should not compile
-//	}
-//
-//	@Test
-//	void test4c() throws Exception {
-//		Compiler c = new Compiler();
-//		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test4c.sl", "Test4");
-//		assertNull(code); // Should not compile
-//	}
-//
-//	@Test
-//	void test4d() throws Exception {
-//		Compiler c = new Compiler();
-//		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test4d.sl", "Test4");
-//		assertNull(code); // Should not compile
-//	}
-//	@Test
-//	void test4e() throws Exception {
-//		Compiler c = new Compiler();
-//		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test4e.sl", "Test4");
-//		assertNull(code); // Should not compile
-//	}
-//
-//	@Test
-//	void test4f() throws Exception {
-//		Compiler c = new Compiler();
-//		JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test4f.sl", "Test4");
-//		assertNull(code); // Should not compile
-//	}
+    @Test
+    public void test3b() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test3b.sl", "Test3");
+
+        assertArrayEquals(new String[]{
+                ".class public Test3",
+                ".super java/lang/Object",
+                "",
+                ".method public static main([Ljava/lang/String;)V",
+                ".limit stack 99",
+                ".limit locals 99",
+                "",
+                "ldc 1",
+                "istore 1",
+                "ldc 2",
+                "istore 2",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 1",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 2",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "getstatic java/lang/System/out Ljava/io/PrintStream;",
+                "iload 1",
+                "invokevirtual java/io/PrintStream/println(I)V",
+                "return",
+                ".end method"
+        }, code.getLines().toArray());
+
+        AssembledClass aClass = AssembledClass.assemble(code);
+        SandBox s = new SandBox();
+        s.runClass(aClass);
+        List<String> output = s.getOutput();
+
+        assertArrayEquals(new String[]{
+                "1",
+                "2",
+                "1"
+        }, output.toArray());
+    }
+
+    @Test
+    public void mustOne() throws AssembleException, IOException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustOne", "MustOne");
+        List<String> result = runCode(bytecode);
+        assertEquals("10", result.get(0));
+    }
+
+    @Test
+    public void mustTwo() throws IOException, AssembleException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustTwo", "MustTwo");
+
+        // Mocking an int scanner by setting the input stream to 10
+        systemInMock.provideLines("10000000");
+
+        List<String> result = runCode(bytecode);
+
+        assertEquals("true", result.get(0));
+    }
+
+    @Test
+    public void mustThree() throws IOException, AssembleException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustThree", "MustThree");
+
+        systemInMock.provideLines("2000", "-1000");
+        List<String> resultOne = runCode(bytecode);
+
+        systemInMock.provideLines("20000", "100100");
+        List<String> resultTwo = runCode(bytecode);
+
+        assertArrayEquals(new String[]{"You mad a mistake", "true"}, resultOne.toArray());
+        assertArrayEquals(new String[]{"false", "false"}, resultTwo.toArray());
+    }
+
+    @Test
+    public void mustFour() throws AssembleException, IOException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFour", "MustFour");
+
+        systemInMock.provideLines("999", "666", "22", "4", "34");
+        List<String> result = runCode(bytecode);
+
+        assertArrayEquals(new String[]{"Wrong answer", "Wrong answer",
+                "Wrong answer", "Correct"}, result.toArray());
+    }
+
+    //	shouldnt compile
+
+
+    @Test
+    public void scope() throws IOException, AssembleException {
+        Compiler c = new Compiler();
+        assertThrows(NullPointerException.class, () -> {
+            compile("testFiles/bad_weather/oekbad/test3b.sl", "Scope");
+        });
+
+    }
+
+
+    @Test
+    public void test4a() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4a.sl", "4a");
+
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void test4b() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4b.sl", "Test4");
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void test4c() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4c.sl", "Test4");
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void test4d() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4d.sl", "Test4");
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void test4e() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4e.sl", "Test4");
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void test4f() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4f.sl", "Test4");
+        assertNull(code); // Should not compile
+    }
 
     //	@Test
 //	void checkOutputFile() throws Exception {
@@ -305,13 +367,6 @@ public class CompilerTest {
     }
 
 
-    @Test
-    public void mustOne() throws AssembleException, IOException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustOne", "MustOne");
-        List<String> result = runCode(bytecode);
-        assertEquals("10", result.get(0));
-    }
-
     //
 //	@Test
 //	public void testOne1234() throws AssembleException, IOException {
@@ -334,49 +389,13 @@ public class CompilerTest {
 //		assertEquals("10", result.get(0));
 //	}
 //
-    @Test
-    public void mustTwo() throws IOException, AssembleException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustTwo", "MustTwo");
 
-        // Mocking an int scanner by setting the input stream to 10
-        systemInMock.provideLines("10");
-
-        List<String> result = runCode(bytecode);
-        // Answer > 5 which should return true
-        assertEquals("true", result.get(0));
-    }
-
-
-    @Test
-    public void mustThree() throws IOException, AssembleException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustThree", "MustThree");
-
-        systemInMock.provideLines("20", "-100");
-        List<String> resultOne = runCode(bytecode);
-
-        systemInMock.provideLines("20", "100");
-        List<String> resultTwo = runCode(bytecode);
-
-        assertArrayEquals(new String[]{"You mad a mistake", "true"}, resultOne.toArray());
-        assertArrayEquals(new String[]{"false", "false"}, resultTwo.toArray());
-    }
 
     @Test
     public void t() throws AssembleException, IOException {
         JasminBytecode bytecode = compile("testFiles/good_weather/oek/test1.sl", "test1");
         List<String> result = runCode(bytecode);
         assertEquals("1337", result.get(0));
-    }
-
-    @Test
-    public void mustFour() throws AssembleException, IOException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFour", "MustFour");
-
-        systemInMock.provideLines("999", "666", "22", "4", "34");
-        List<String> result = runCode(bytecode);
-
-        assertArrayEquals(new String[]{"Wrong answer", "Wrong answer",
-                "Wrong answer", "Correct"}, result.toArray());
     }
 
 

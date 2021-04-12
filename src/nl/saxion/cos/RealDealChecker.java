@@ -34,7 +34,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitDoubleExpr(TheRealDealLangParser.DoubleExprContext ctx) {
-        System.out.println("visited double");
         return addType(ctx, DOUBLE);
     }
 
@@ -49,14 +48,19 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUp(name);
-
-        if (symbol == null) {
-            throw new CompilerException("Use of variable " + name + " before declaration");
+        try{
+            if (symbol==null){
+                throw new NewException("Use of variable " + name + " before declaration");
+            }
+        }catch (NewException e){
+            e.printStackTrace();
         }
+
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
     }
+
 
     @Override
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
