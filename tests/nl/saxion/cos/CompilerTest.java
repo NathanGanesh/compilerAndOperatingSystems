@@ -248,7 +248,7 @@ public class CompilerTest {
 
     @Test
     public void mustFive() throws IOException, AssembleException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFive.txt", "test");
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFive.txt", "prog");
         List<String> result = runCode(bytecode);
         assertEquals("Correct", result.get(0));
     }
@@ -333,7 +333,7 @@ public class CompilerTest {
         assertNull(code);
     }
 
-    // TODO: 12-4-2021 todo 
+    // TODO: 12-4-2021 todo
     @Test
     public void mustBadFour() throws Exception {
         Compiler c = new Compiler();
@@ -342,7 +342,7 @@ public class CompilerTest {
 
          }
 
-    // TODO: 12-4-2021 todo 
+    // TODO: 12-4-2021 todo
     @Test
     public void mustBadFive() throws Exception {
         assertThrows(NullPointerException.class, () -> {

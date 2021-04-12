@@ -1,4 +1,4 @@
- int power(int a, int b) {
+int power(int a, int b) {
         int result = 1;
         while (b > 0) {
             result = result * a;
@@ -13,5 +13,3 @@
         } else {
             print(data);
       }
-
-
