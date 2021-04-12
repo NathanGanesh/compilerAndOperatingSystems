@@ -66,8 +66,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUpLocal(name);
-        DataType type = symbol.getType();
-
+        System.out.println();
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
