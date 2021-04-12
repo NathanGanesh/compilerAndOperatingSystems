@@ -61,7 +61,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     @Override
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
-        Symbol symbol = symbolTable.lookUp(name);
+        Symbol symbol = symbolTable.lookUpLocal(name);
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
@@ -291,6 +291,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (ctx.argument_list() != null) {
             for (ParseTree decl : ctx.argument_list().children) {
                 // Skip the comma that separates argument declarations.+
+                System.out.println(decl.getText() + "asdhjkl");
                 if (!(",".equals(decl.getText()))) {
                     name.append(symbolTable.getTypeLetter2(decl.getChild(0).getText()));
 //                    System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText()) + " kl;sdf");
@@ -298,7 +299,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                     System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText())+ " jkl;");
                     DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
                     symbolTable.add(decl.getText(), datatype);
-
                     dataTypes.put(decl, datatype);
                     scope.put(decl, symbolTable);
                 }
@@ -313,6 +313,16 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         // Associate the this node with the current scope.
         scope.put(ctx, symbolTable);
 
+//        symbolTable.add(ctx.TYPE(),);
+//        System.out.println(symbolTable.getTypeEnum(ctx.TYPE().getText()) + " asdl;");
+        System.out.println((ctx.IDENTIFIER()) + "teper ");
+        System.out.println(ctx.TYPE().getText()+" okikoko");
+        dataTypes.put( ctx.IDENTIFIER(), symbolTable.getTypeEnum(ctx.TYPE().getText()) );
+        symbolTable.add(ctx.IDENTIFIER().getText(), symbolTable.getTypeEnum(ctx.TYPE().getText()));
+
+//        symbolTable.add();
+        System.out.println(ctx.TYPE().getText() + " TYPER");
+
         // Visit the arguments and body in the new scope and restore the current scope afterwards.
         symbolTable = symbolTable.openFunctionScope();
 
@@ -320,6 +330,26 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         symbolTable = symbolTable.closeScope();
 
         return type;
+    }
+
+    @Override
+    public DataType visitReturnStmt(TheRealDealLangParser.ReturnStmtContext ctx) {
+        if (ctx.expr().isEmpty()){
+            return VOID;
+        }
+        visit(ctx.expr());
+//        System.out.println(dataTypes.get(ctx.expr()));
+//        ctx.expr()
+//        System.out.println(ctx.expr().getText() + " adsl") ;
+//        dataTypes.get(visit(ctx));
+//        symbolTable.
+
+//        System.out.println(dataTypes.get(ctx.expr()) );
+//        System.out.println(ctx.expr().getText() + " alsjk");
+//       dataTypes.get()
+//        visit(ctx.expr());
+
+        return  null;
     }
 
     /**Copy pasted from seminars

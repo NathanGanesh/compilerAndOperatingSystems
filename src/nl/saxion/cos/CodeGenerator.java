@@ -3,10 +3,8 @@ package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import javax.xml.crypto.Data;
 
 import static nl.saxion.cos.DataType.*;
-import static nl.saxion.cos.DataType.getTypeDescriptor;
 
 public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
@@ -168,57 +166,20 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     @Override
     public Void visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
+
+        StringBuilder arguments2 = new StringBuilder();
         StringBuilder arguments = new StringBuilder();
-//        for (int i = 0; i < ctx.expression_list().expr().size(); i++) {
-//            System.out.println(ctx.expression_list().expr(i).getText() + " asdkl");
-//        }
-//        System.out.println(ctx.expression_list().getText() + " sadl;");
-//        for (ParseTree expr : ctx.expression_list().children) {
-//            if (!(",".equals(expr.getText()))) {
-////                System.out.println(expr.);
-//
-//                System.out.println(expr.getText() + " hjiop");
-//                arguments.append(getTypeLetter(types.get(expr)));
-//                visit(expr);
-//                System.out.println(expr.getChild(0).getText() + " asdfjio;p");
-//            }
-//        }
-//        for (ParseTree child : ctx.expression_list().children) {
-//            visit(child.);
-//        }
-
         for (ParseTree child : ctx.expression_list().expr()) {
-            visit(child);
-        }     jasminCode.add("invokestatic " + className + "/" + identifier + "(" +
-                function.getArgumentSequence() + ")" + getTypeDescriptor(function.getDataType()));
+            if (!(",".equals(child.getText()))) {
+                arguments.append(getTypeLetter(types.get(child)));
+                arguments2.append(getTypeLetter2(types.get(child)));
+                visit(child);
+            }
+        }
+        Symbol symbol = scope.get(ctx).lookUp(name+"@"+arguments);
+        jasminCode.add("invokestatic " + "test" + "/" + name + "(" +
+                arguments2 + ")" +getTypeLetter2(symbol.getType()));
 
-//        for (int i = 0; i < ctx.expression_list().expr().size(); i++) {
-//               visit(ctx.)
-//        }
-
-
-        Symbol symbol = scope.get(ctx).lookUp(name + "@" + arguments);
-
-
-
-
-//            System.out.println(arguments + "arguemtnsd123");
-//
-////            System.out.println(expr.getText());
-//            System.out.println(types.get(expr) + "asdf");
-//            System.out.println();
-
-
-//        for (int i = 0; i < ctx.expression_list().children; i++) {
-//
-//            System.out.println((ctx.expression_list().expr().get(i)).getChild(0) + "hey");
-////            System.out.println(ctx.expression_list().expr().get(i).getText());
-////            arguments.append(getFunctionDescriptor(ctx.expression_list().expr().get(i).().getText()));
-//        }
-
-//        System.out.println(symbol.getName()+"namer123");
-
-        System.out.println("funcexpr");
         return null;
     }
 
@@ -244,6 +205,17 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
             default:
                 break;
         }
+        return null;
+    }
+
+    @Override
+    public Void visitReturnStmt(TheRealDealLangParser.ReturnStmtContext ctx) {
+//        if (ctx.expr().isEmpty()){
+//            return VOID
+//        }
+
+        System.out.println("git hit her");
+        visit(ctx.expr());
         return null;
     }
 

@@ -58,4 +58,22 @@ public enum DataType {
                 return '?';
         }
     }
+
+    public static char getTypeLetter2(DataType type) {
+        System.out.println(type + "123");
+        switch (type) {
+            case INT:
+                return 'I';
+            case DOUBLE:
+                return 'D';
+            case BOOLEAN:
+                return 'B';
+            case TEXT:
+                return 'T';
+            case VOID:
+                return 'V';
+            default:
+                return '?';
+        }
+    }
 }

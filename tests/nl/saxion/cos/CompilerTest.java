@@ -248,7 +248,7 @@ public class CompilerTest {
 
     @Test
     public void mustFive() throws IOException, AssembleException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustfive/MustFive.txt", "MustFive");
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFive.txt", "MustFive");
         List<String> result = runCode(bytecode);
         assertEquals("Correct", result.get(0));
     }
