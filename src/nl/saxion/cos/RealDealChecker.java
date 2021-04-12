@@ -48,13 +48,15 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUp(name);
-        try{
+
             if (symbol==null){
-                throw new NewException("Use of variable " + name + " before declaration");
+                try {
+                    throw new NewException("Use of variable " + name + " before declaration");
+                } catch (NewException e) {
+                    e.printStackTrace();
+                }
             }
-        }catch (NewException e){
-            e.printStackTrace();
-        }
+
 
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
@@ -65,8 +67,9 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     @Override
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
+        System.out.println(name + "name");
+
         Symbol symbol = symbolTable.lookUpLocal(name);
-        System.out.println(symbol);
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
@@ -78,16 +81,19 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 if (symbol.getType() != TEXT) {
                     throw new CompilerException("Incompatiple datatypes");
                 }
+                visit(ctx.expr());
                 break;
             case "scanBoolean()":
                 if (symbol.getType() != BOOLEAN) {
                     throw new CompilerException("Incompatiple datatypes");
                 }
+                visit(ctx.expr());
                 break;
             case "scanDouble()":
                 if (symbol.getType() != DataType.DOUBLE) {
                     throw new CompilerException("Incompatiple datatypes");
                 }
+                visit(ctx.expr());
                 break;
             default:
                 if (!symbol.getType().equals(visit(ctx.expr()))) {

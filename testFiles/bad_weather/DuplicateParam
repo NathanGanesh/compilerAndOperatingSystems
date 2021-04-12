@@ -1,3 +1,0 @@
-int test (int param, int param) {
-return param * param;
-}
