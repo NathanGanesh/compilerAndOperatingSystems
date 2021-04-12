@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import javax.xml.crypto.Data;
 
 import static nl.saxion.cos.DataType.*;
+import static nl.saxion.cos.DataType.getTypeDescriptor;
 
 public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
@@ -182,9 +183,14 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 //                System.out.println(expr.getChild(0).getText() + " asdfjio;p");
 //            }
 //        }
-        for (ParseTree child : ctx.expression_list().children) {
-            visit(child.);
-        }
+//        for (ParseTree child : ctx.expression_list().children) {
+//            visit(child.);
+//        }
+
+        for (ParseTree child : ctx.expression_list().expr()) {
+            visit(child);
+        }     jasminCode.add("invokestatic " + className + "/" + identifier + "(" +
+                function.getArgumentSequence() + ")" + getTypeDescriptor(function.getDataType()));
 
 //        for (int i = 0; i < ctx.expression_list().expr().size(); i++) {
 //               visit(ctx.)

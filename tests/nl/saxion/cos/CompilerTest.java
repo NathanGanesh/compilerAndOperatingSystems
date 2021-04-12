@@ -308,8 +308,8 @@ public class CompilerTest {
         assertThrows(NullPointerException.class, () -> {
             compile("testFiles/bad_weather/oekbad/test4f.sl", "Test4");
         });
-
     }
+
 
     //	@Test
 //	void checkOutputFile() throws Exception {
