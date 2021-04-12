@@ -1,11 +1,11 @@
 // Program with a basic scope. Should not compile, unless you comment out the last print
-INT a;
+int a;
 a = 1;
-BEGIN
-   INT b;
-   b = 2;
-   PRINT a;
-   PRINT b;
-END
-PRINT a;
-PRINT b;
+{
+int b;
+b = 2;
+print(a);
+print(b);
+}
+print(a);
+print(b);

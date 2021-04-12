@@ -230,7 +230,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
                 jasminCode.add("istore " + symbol.getLocalSlot());
                 break;
             case TEXT:
-                jasminCode.add("ldc \"empty\"");
+                jasminCode.add("ldc \"empty\"" );
                 jasminCode.add("astore " + symbol.getLocalSlot());
                 break;
             default:
