@@ -1,2 +1,0 @@
-int rightType = 20;
-int typeMismatch = "wrong";

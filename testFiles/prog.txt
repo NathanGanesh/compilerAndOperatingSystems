@@ -3,4 +3,4 @@ print (123);
 return 2;
 }
 
-print (1);
+test(1,1);

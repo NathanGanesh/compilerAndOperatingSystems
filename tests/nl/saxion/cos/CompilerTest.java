@@ -41,51 +41,6 @@ public class CompilerTest {
 
 
     @Test
-    public void test1() throws Exception {
-        Compiler c = new Compiler();
-        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test1.sl", "Test1");
-
-        assertArrayEquals(new String[]{
-                ".class public Test1",
-                ".super java/lang/Object",
-                "",
-                ".method public static main([Ljava/lang/String;)V",
-                ".limit stack 99",
-                ".limit locals 99",
-                "",
-                "getstatic java/lang/System/out Ljava/io/PrintStream;",
-                "ldc 1",
-                "ldc 2",
-                "iadd",
-                "invokevirtual java/io/PrintStream/println(I)V",
-                "getstatic java/lang/System/out Ljava/io/PrintStream;",
-                "ldc 3",
-                "ldc 4",
-                "ldc 5",
-                "imul",
-                "iadd",
-                "invokevirtual java/io/PrintStream/println(I)V",
-                "getstatic java/lang/System/out Ljava/io/PrintStream;",
-                "ldc \"Hi\"",
-                "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V",
-                "return",
-                ".end method"
-        }, code.getLines().toArray());
-
-        AssembledClass aClass = AssembledClass.assemble(code);
-        SandBox s = new SandBox();
-        s.runClass(aClass);
-        List<String> output = s.getOutput();
-
-        assertArrayEquals(new String[]{
-                "3",
-                "23",
-                "Hi"
-        }, output.toArray());
-    }
-
-    //
-    @Test
     public void test2a() throws Exception {
         Compiler c = new Compiler();
         JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test2a.sl", "Test2");
@@ -204,7 +159,7 @@ public class CompilerTest {
     @Test
     public void test3b() throws Exception {
         Compiler c = new Compiler();
-        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test3b.sl", "Test3");
+        JasminBytecode code = c.compileFile("testFiles/good_weather/oek/test3a.sl", "Test3");
 
         assertArrayEquals(new String[]{
                 ".class public Test3",
@@ -214,8 +169,12 @@ public class CompilerTest {
                 ".limit stack 99",
                 ".limit locals 99",
                 "",
+                "ldc 0",
+                "istore 1",
                 "ldc 1",
                 "istore 1",
+                "ldc 0",
+                "istore 2",
                 "ldc 2",
                 "istore 2",
                 "getstatic java/lang/System/out Ljava/io/PrintStream;",
@@ -287,18 +246,26 @@ public class CompilerTest {
                 "Wrong answer", "Correct"}, result.toArray());
     }
 
+    @Test
+    public void mustFive() throws IOException, AssembleException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustfive/MustFive.txt", "MustFive");
+        List<String> result = runCode(bytecode);
+        assertEquals("Correct", result.get(0));
+    }
+
+
+
+
     //	shouldnt compile
 
 
     @Test
     public void scope() throws IOException, AssembleException {
-        Compiler c = new Compiler();
         assertThrows(NullPointerException.class, () -> {
             compile("testFiles/bad_weather/oekbad/test3b.sl", "Scope");
         });
 
     }
-
 
     @Test
     public void test4a() throws Exception {
@@ -338,9 +305,10 @@ public class CompilerTest {
 
     @Test
     public void test4f() throws Exception {
-        Compiler c = new Compiler();
-        JasminBytecode code = c.compileFile("testFiles/bad_weather/oekbad/test4f.sl", "Test4");
-        assertNull(code); // Should not compile
+        assertThrows(NullPointerException.class, () -> {
+            compile("testFiles/bad_weather/oekbad/test4f.sl", "Test4");
+        });
+
     }
 
     //	@Test
@@ -364,38 +332,6 @@ public class CompilerTest {
         List<String> result = runCode(bytecode);
         System.out.println(result.get(0));
         assertEquals("You mad a mistake", result.get(0));
-    }
-
-
-    //
-//	@Test
-//	public void testOne1234() throws AssembleException, IOException {
-//		JasminBytecode bytecode = compile("testFiles/prog.txt", "prog");
-//		systemInMock.provideLines("10");
-//
-////		System.out.println(Arrays.toString(bytecode.getLines().toArray()));
-//		List<String> result = runCode(bytecode);
-//		System.out.println(result.get(0));
-//		assertEquals("10", result.get(0));
-//	}
-//
-//	@Test
-//	public void testOne123() throws AssembleException, IOException {
-//		JasminBytecode bytecode = compile("testFiles/prog.txt", "prog");
-//		systemInMock.provideLines("10");
-//
-//		System.out.println(Arrays.toString(bytecode.getLines().toArray()));
-//		List<String> result = runCode(bytecode);
-//		assertEquals("10", result.get(0));
-//	}
-//
-
-
-    @Test
-    public void t() throws AssembleException, IOException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/oek/test1.sl", "test1");
-        List<String> result = runCode(bytecode);
-        assertEquals("1337", result.get(0));
     }
 
 
