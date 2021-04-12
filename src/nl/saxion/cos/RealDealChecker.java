@@ -3,6 +3,8 @@ package nl.saxion.cos;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
+import javax.xml.crypto.Data;
+
 import static nl.saxion.cos.DataType.*;
 
 public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
@@ -291,6 +293,14 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 // Skip the comma that separates argument declarations.+
                 if (!(",".equals(decl.getText()))) {
                     name.append(symbolTable.getTypeLetter2(decl.getChild(0).getText()));
+//                    System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText()) + " kl;sdf");
+//                    System.out.println(decl.getText() + " asdhjk");
+                    System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText())+ " jkl;");
+                    DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
+                    symbolTable.add(decl.getText(), datatype);
+
+                    dataTypes.put(decl, datatype);
+                    scope.put(decl, symbolTable);
                 }
             }
         }
@@ -305,6 +315,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
         // Visit the arguments and body in the new scope and restore the current scope afterwards.
         symbolTable = symbolTable.openFunctionScope();
+
         visitChildren(ctx);
         symbolTable = symbolTable.closeScope();
 

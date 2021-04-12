@@ -170,10 +170,16 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         StringBuilder arguments = new StringBuilder();
         for (ParseTree expr : ctx.expression_list().children) {
             if (!(",".equals(expr.getText()))) {
+//                System.out.println(expr.);
+
+                System.out.println(expr.getText() + " hjiop");
                 arguments.append(getTypeLetter(types.get(expr)));
+                visit(expr);
+                System.out.println(expr.getChild(0).getText() + " asdfjio;p");
             }
         }
         Symbol symbol = scope.get(ctx).lookUp(name + "@" + arguments);
+
 
 
 
