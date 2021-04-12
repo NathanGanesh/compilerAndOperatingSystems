@@ -27,6 +27,20 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     }
 
     @Override
+    public Void visitCompileUnit(TheRealDealLangParser.CompileUnitContext ctx) {
+        // Visit the function declaration nodes first
+        ctx.function_definition().forEach(this::visit);
+
+        // Generate the bytecode for the main method
+        jasminCode.add(".method public static main([Ljava/lang/String;)V");
+        jasminCode.add(".limit stack 99");
+        jasminCode.add(".limit locals 99");
+
+        ctx.statement().forEach(this::visit);
+        return null;
+    }
+
+    @Override
     public Void visitIntExpr(TheRealDealLangParser.IntExprContext ctx) {
         jasminCode.add("ldc " + Integer.parseInt(ctx.INT().getText()));
         return null;
@@ -83,6 +97,26 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
             default:
                 return null;
         }
+        return null;
+    }
+
+    @Override
+    public Void visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
+        StringBuilder arguments = new StringBuilder();
+
+        for (int i = 0; i < ctx.argument_list().declaration().size(); i++) {
+            arguments.append(getFunctionDescriptor(ctx.argument_list().declaration().get(i).TYPE().getText()));
+        }
+
+        jasminCode.add(".method public static " + ctx.IDENTIFIER().getText() +
+                "(" + arguments + ")" + getFunctionDescriptor(ctx.TYPE().getText()));
+        jasminCode.add(".limit stack 99");
+        jasminCode.add(".limit locals 99");
+
+        visit(ctx.block());
+
+        jasminCode.add(DataType.getFunctionReturn(ctx.TYPE().getText()) + "return");
+        jasminCode.add(".end method");
         return null;
     }
 
@@ -230,7 +264,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
                 jasminCode.add("istore " + symbol.getLocalSlot());
                 break;
             case TEXT:
-                jasminCode.add("ldc \"empty\"" );
+                jasminCode.add("ldc \"empty\"");
                 jasminCode.add("astore " + symbol.getLocalSlot());
                 break;
             default:

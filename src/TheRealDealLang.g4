@@ -1,12 +1,11 @@
 grammar TheRealDealLang;
 
 compileUnit
-    :   statement* EOF
+    :   (function_definition|statement)*  EOF
     ;
 
 statement
     :   block                                                                                        # blockStmt
-    | function_definition                #functionDefinitionStamenet
     |   type=TYPE name=IDENTIFIER  SEMICOLON                                              # varDeclStmt
     |   type=TYPE name=IDENTIFIER (ASSIGN expr)*? SEMICOLON                               # initStmt
     |   IDENTIFIER ASSIGN expr SEMICOLON                                                                # assignVarStmt
