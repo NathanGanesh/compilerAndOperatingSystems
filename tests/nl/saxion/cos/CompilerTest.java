@@ -246,6 +246,16 @@ public class CompilerTest {
                 "Wrong answer", "Correct"}, result.toArray());
     }
 
+    @Test
+    public void mustFive() throws IOException, AssembleException {
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustfive/MustFive.txt", "MustFive");
+        List<String> result = runCode(bytecode);
+        assertEquals("Correct", result.get(0));
+    }
+
+
+
+
     //	shouldnt compile
 
 
@@ -256,7 +266,6 @@ public class CompilerTest {
         });
 
     }
-
 
     @Test
     public void test4a() throws Exception {

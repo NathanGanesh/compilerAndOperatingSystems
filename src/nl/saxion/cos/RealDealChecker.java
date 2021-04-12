@@ -43,21 +43,13 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     }
 
 
-
     @Override
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUp(name);
-
-            if (symbol==null){
-                try {
-                    throw new NewException("Use of variable " + name + " before declaration");
-                } catch (NewException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
+        if (symbol == null) {
+            throw new CompilerException("Use of variable " + name + " before declaration");
+        }
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
         return symbol.getType();
@@ -67,9 +59,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     @Override
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
-        System.out.println(name + "name");
-
-        Symbol symbol = symbolTable.lookUpLocal(name);
+        Symbol symbol = symbolTable.lookUp(name);
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
@@ -99,6 +89,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 if (!symbol.getType().equals(visit(ctx.expr()))) {
                     throw new CompilerException("Incompatiple datatypes");
                 }
+                visit(ctx.expr());
                 break;
         }
 
@@ -190,6 +181,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
             default:
                 throw new CompilerException("Incompatiple datatypes");
         }
+        System.out.println(ctx.getText() + "got added");
         dataTypes.put(ctx, symbolTable.lookUp(name).getType());
         scope.put(ctx, symbolTable);
         return symbolTable.lookUp(name).getType();
@@ -266,15 +258,12 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         System.out.println("got hit3213213");
         scope.put(ctx, symbolTable);
         symbolTable = symbolTable.openScope();
-
-        for (int i = 0; i < ctx.statement().size(); i++) {
-            visit(ctx.statement().get(i));
-        }
-
+        visitChildren(ctx);
         symbolTable = symbolTable.getParentScope();
         return null;
 
     }
+
 
 
     @Override
@@ -436,6 +425,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 throw new CompilerException("no type of boolean");
             }
         }
+
         visit(ctx.condition());
         visit(ctx.block());
         return null;
