@@ -284,7 +284,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         // Decorate the function name with argument types and return type. Do this prior to visiting the arguments
         // themselves as this will enter them in the symbol table of the new scope. Start with the arguments.
         name.append('@');
-
+        symbolTable = symbolTable.openFunctionScope();
         if (ctx.argument_list() != null) {
             for (ParseTree decl : ctx.argument_list().children) {
                 // Skip the comma that separates argument declarations.+
@@ -300,18 +300,21 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 //                        symbolTable.addGlobal(decl.getChild(1).getText(), datatype);
                         symbolTable.add2(decl.getChild(1).getText(), datatype);
 //                    symbolTable.add(decl.getChild(1).getText(), datatype);
-                    dataTypes.put(decl.getChild(1), datatype);
+//                    dataTypes.put(decl.getChild(1), datatype);
 //                    scope.put(decl.getChild(1), symbolTable);
                     System.out.println(decl.getText() + " askdokp");
 //                    visit(decl);
                 }
             }
         }
+
+        symbolTable.add(name.toString(), type);
+        scope.put(ctx.IDENTIFIER(), symbolTable);
         System.out.println("name:" + name);
         // Store the function name in the current scope.
-        symbolTable.addGlobal(name.toString(), type);
+
         // Associate the this node with the current scope.
-//        scope.put(ctx, symbolTable);
+
 
 //        symbolTable.add(ctx.TYPE(),);
 //        System.out.println(symbolTable.getTypeEnum(ctx.TYPE().getText()) + " asdl;");
@@ -322,11 +325,11 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 //        System.out.println(ctx.TYPE().getText() + " TYPER");
 
         // Visit the arguments and body in the new scope and restore the current scope afterwards.
-        symbolTable = symbolTable.openFunctionScope();
+
 
         visitChildren(ctx);
         symbolTable = symbolTable.closeScope();
-
+        symbolTable.addGlobal(name.toString(), type);
         return type;
     }
 

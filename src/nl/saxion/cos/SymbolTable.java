@@ -46,8 +46,8 @@ public class SymbolTable {
         if (type == DataType.DOUBLE ) {
             nextIndex += 2;
         } else {
-            System.out.println(name+ " sdfjhk");
             nextIndex++;
+            System.out.println(name+ " sdfjhk");
         }
     }
 

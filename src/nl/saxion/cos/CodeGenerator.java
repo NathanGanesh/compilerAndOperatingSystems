@@ -118,7 +118,6 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
         jasminCode.add(DataType.getFunctionReturn(ctx.TYPE().getText()) + "return");
         jasminCode.add(".end method");
-        jasminCode.add("");
         return null;
     }
 
@@ -180,7 +179,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
             }
         }
         Symbol symbol = scope.get(ctx).lookUp(name+"@"+arguments);
-        jasminCode.add("invokestatic " + "test" + "/" + name + "(" +
+        jasminCode.add("invokestatic " + "prog" + "/" + name + "(" +
                 arguments2 + ")" +getTypeLetter2(symbol.getType()));
 
         return null;
@@ -213,13 +212,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
     @Override
     public Void visitReturnStmt(TheRealDealLangParser.ReturnStmtContext ctx) {
-//        if (ctx.expr().isEmpty()){
-//            return VOID
-//        }
-
-        System.out.println("git hit her");
-        visit(ctx.expr());
-        return null;
+        return    visit(ctx.expr());
     }
 
     @Override
