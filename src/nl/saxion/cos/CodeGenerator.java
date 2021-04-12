@@ -127,28 +127,6 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     }
 
     @Override
-    public Void visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
-        StringBuilder arguments = new StringBuilder();
-
-        for (int i = 0; i < ctx.argument_list().declaration().size(); i++) {
-            arguments.append(getFunctionDescriptor(ctx.argument_list().declaration().get(i).TYPE().getText()));
-        }
-
-        System.out.println(arguments);
-
-        jasminCode.add(".method public static " + ctx.IDENTIFIER().getText() +
-                "(" + arguments + ")" + getFunctionDescriptor(ctx.TYPE().getText()));
-        jasminCode.add(".limit stack 99");
-        jasminCode.add(".limit locals 99");
-
-        visit(ctx.block());
-
-        jasminCode.add(DataType.getFunctionReturn(ctx.TYPE().getText()) + "return");
-        jasminCode.add(".end method");
-        return null;
-    }
-
-    @Override
     public Void visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
         return null;
     }
