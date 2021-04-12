@@ -49,8 +49,9 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitVariableExpr(TheRealDealLangParser.VariableExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUp(name);
+        System.out.println(name + "/ok");
         if (symbol == null) {
-            throw new CompilerException("Use of variable " + name + " before declaration");
+            throw new CompilerException("Use of variable var expr" + name + " before declaration");
         }
         dataTypes.put(ctx, symbol.getType());
         scope.put(ctx, symbolTable);
@@ -61,7 +62,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     @Override
     public DataType visitAssignVarStmt(TheRealDealLangParser.AssignVarStmtContext ctx) {
         String name = ctx.IDENTIFIER().getText();
-        Symbol symbol = symbolTable.lookUpLocal(name);
+        Symbol symbol = symbolTable.lookUp(name);
         switch (ctx.expr().getText()) {
             case "scanInt()":
                 if (symbol.getType() != INT) {
@@ -155,7 +156,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUp(name);
         if (symbol != null) {
-            throw new CompilerException("Use of variable " + name + " Is already in use");
+            throw new CompilerException("Use of variable declare" + name + " Is already in use");
         }
 
 //        if (ctx.expr() != null) {
@@ -194,7 +195,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         String name = ctx.IDENTIFIER().getText();
         Symbol symbol = symbolTable.lookUp(name);
         if (symbol != null) {
-            throw new CompilerException("Use of variable " + name + " Is already in use");
+            throw new CompilerException("Use of variable init" + name + " Is already in use");
         }
         //check if datatypes are the same on the lefts and right side
         if (ctx.expr() != null) {
@@ -298,9 +299,14 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 //                    System.out.println(decl.getText() + " asdhjk");
                     System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText())+ " jkl;");
                     DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
-                    symbolTable.add(decl.getText(), datatype);
-                    dataTypes.put(decl, datatype);
-                    scope.put(decl, symbolTable);
+//                    System.out.println(decl.getChild(0).getText() + " asd");
+                    System.out.println(decl.getChild(1).getText() + " kjkjkjljki");
+
+                    symbolTable.add(decl.getChild(1).getText(), datatype);
+                    dataTypes.put(decl.getChild(1), datatype);
+                    scope.put(decl.getChild(1), symbolTable);
+                    System.out.println(decl.getText() + " askdokp" );
+//                    visit(decl);
                 }
             }
         }

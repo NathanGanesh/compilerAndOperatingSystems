@@ -248,7 +248,7 @@ public class CompilerTest {
 
     @Test
     public void mustFive() throws IOException, AssembleException {
-        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFive.txt", "MustFive");
+        JasminBytecode bytecode = compile("testFiles/good_weather/mustWeatherCases/MustFive.txt", "test");
         List<String> result = runCode(bytecode);
         assertEquals("Correct", result.get(0));
     }
@@ -310,6 +310,49 @@ public class CompilerTest {
         });
     }
 
+    @Test
+    public void mustBadOne() throws Exception {
+//        assertThrows(NullPointerException.class, () -> {
+//            compile("testFiles/bad_weather/MustBadCases/if.txt", "Test4");
+//        });
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/if.txt", "Test4");
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void mustBadTwo() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/while.txt", "Test4");
+        assertNull(code);
+    }
+    @Test
+    public void mustBadThree() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/functioninpu.txt", "Test4");
+        assertNull(code);
+    }
+
+
+    @Test
+    public void mustBadFour() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/dupFunction", "Test4");
+        assertNull(code);
+
+         }
+
+
+    @Test
+    public void mustBadFive() throws Exception {
+        assertThrows(NullPointerException.class, () -> {
+            compile("testFiles/bad_weather/oekbad/test4f.sl", "Test4");
+        });
+    }
+
+
+
+
 
     //	@Test
 //	void checkOutputFile() throws Exception {
@@ -327,11 +370,10 @@ public class CompilerTest {
     @Test
     public void variableNotFound() throws Exception {
         JasminBytecode bytecode = compile("testFiles/prog.txt", "prog");
-        systemInMock.provideLines("60", "-90");
 
         List<String> result = runCode(bytecode);
         System.out.println(result.get(0));
-        assertEquals("You mad a mistake", result.get(0));
+        assertEquals("123", result.get(0));
     }
 
 

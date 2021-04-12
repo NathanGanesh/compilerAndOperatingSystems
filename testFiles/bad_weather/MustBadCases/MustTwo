@@ -1,4 +1,0 @@
-int answer;
-answer = scanInt();
-boolean hello = answer > 5;
-print(hello);

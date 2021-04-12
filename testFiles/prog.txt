@@ -1,6 +1,11 @@
-int test (int a, int b) {
-print (123);
-return 2;
-}
+ int power(int a, int b) {
+        int result = 1;
+        while (b > 0) {
+            result = result * a;
+            b = b - 1;
+        }
+        return result;
+    }
 
-test(1,1);
+
+power(1,1);

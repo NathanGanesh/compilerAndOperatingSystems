@@ -1,3 +1,0 @@
-int test= 3 + 5 * 6 / (5 * 2) - 6;
-test = test + 10;
-print(test);
