@@ -5,7 +5,4 @@
             b = b - 1;
         }
         return result;
-    }
-
-
-power(1,1);
+}

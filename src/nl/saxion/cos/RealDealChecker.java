@@ -303,8 +303,8 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                     System.out.println(decl.getChild(1).getText() + " kjkjkjljki");
 
                     symbolTable.add(decl.getChild(1).getText(), datatype);
-                    dataTypes.put(decl.getChild(1), datatype);
-                    scope.put(decl.getChild(1), symbolTable);
+//                    dataTypes.put(decl.getChild(1), datatype);
+//                    scope.put(decl.getChild(1), symbolTable);
                     System.out.println(decl.getText() + " askdokp" );
 //                    visit(decl);
                 }

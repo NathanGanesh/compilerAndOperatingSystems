@@ -177,7 +177,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
             }
         }
         Symbol symbol = scope.get(ctx).lookUp(name+"@"+arguments);
-        jasminCode.add("invokestatic " + "test" + "/" + name + "(" +
+        jasminCode.add("invokestatic " + "prog" + "/" + name + "(" +
                 arguments2 + ")" +getTypeLetter2(symbol.getType()));
 
         return null;
