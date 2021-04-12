@@ -40,6 +40,19 @@ public class SymbolTable {
         }
     }
 
+    public void add2(String name, DataType type) {
+        symbols.put(name,new Symbol(name,type,nextIndex-1));
+
+        if (type == DataType.DOUBLE ) {
+            nextIndex += 2;
+        } else {
+            System.out.println(name+ " sdfjhk");
+            nextIndex++;
+        }
+    }
+
+
+
     // The addGlobal() method assigns a slot of -1, since it is a static attribute of class Main and has no slot.
     public void addGlobal(String name, DataType type) {
         symbols.put(name,new Symbol(name,type,-1));

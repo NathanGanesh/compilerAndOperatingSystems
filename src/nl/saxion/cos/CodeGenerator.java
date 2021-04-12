@@ -109,7 +109,6 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         for (int i = 0; i < ctx.argument_list().declaration().size(); i++) {
             arguments.append(getFunctionDescriptor(ctx.argument_list().declaration().get(i).TYPE().getText()));
         }
-
         jasminCode.add(".method public static " + ctx.IDENTIFIER().getText() +
                 "(" + arguments + ")" + getFunctionDescriptor(ctx.TYPE().getText()));
         jasminCode.add(".limit stack 99");
@@ -119,6 +118,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
         jasminCode.add(DataType.getFunctionReturn(ctx.TYPE().getText()) + "return");
         jasminCode.add(".end method");
+        jasminCode.add("");
         return null;
     }
 
@@ -169,10 +169,13 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
         StringBuilder arguments2 = new StringBuilder();
         StringBuilder arguments = new StringBuilder();
-        for (ParseTree child : ctx.expression_list().expr()) {
+
+
+        for (ParseTree child : ctx.expression_list().children) {
             if (!(",".equals(child.getText()))) {
                 arguments.append(getTypeLetter(types.get(child)));
                 arguments2.append(getTypeLetter2(types.get(child)));
+                System.out.println(child.getText() + " kek");
                 visit(child);
             }
         }

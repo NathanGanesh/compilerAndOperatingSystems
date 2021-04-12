@@ -275,10 +275,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         return dataType;
     }
 
-    @Override
-    public DataType visitDeclaration(TheRealDealLangParser.DeclarationContext ctx) {
-        return super.visitDeclaration(ctx);
-    }
 
     @Override
     public DataType visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
@@ -301,10 +297,11 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                     DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
 //                    System.out.println(decl.getChild(0).getText() + " asd");
                     System.out.println(decl.getChild(1).getText() + " kjkjkjljki");
-
-                    symbolTable.add(decl.getChild(1).getText(), datatype);
+//                        symbolTable.addGlobal(decl.getChild(1).getText(), datatype);
+                        symbolTable.add2(decl.getChild(1).getText(), datatype);
+//                    symbolTable.add(decl.getChild(1).getText(), datatype);
                     dataTypes.put(decl.getChild(1), datatype);
-                    scope.put(decl.getChild(1), symbolTable);
+//                    scope.put(decl.getChild(1), symbolTable);
                     System.out.println(decl.getText() + " askdokp");
 //                    visit(decl);
                 }

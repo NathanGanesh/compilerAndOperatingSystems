@@ -253,6 +253,12 @@ public class CompilerTest {
         assertEquals("Correct", result.get(0));
     }
 
+    @Test
+    public void prog() throws IOException, AssembleException {
+        JasminBytecode bytecode = compile("testFiles/prog.txt", "prog");
+        List<String> result = runCode(bytecode);
+        assertEquals("9", result.get(0));
+    }
 
 
 
