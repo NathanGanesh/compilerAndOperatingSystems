@@ -168,16 +168,29 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
     public Void visitFuncExpr(TheRealDealLangParser.FuncExprContext ctx) {
         String name = ctx.IDENTIFIER().getText();
         StringBuilder arguments = new StringBuilder();
-        for (ParseTree expr : ctx.expression_list().children) {
-            if (!(",".equals(expr.getText()))) {
-//                System.out.println(expr.);
-
-                System.out.println(expr.getText() + " hjiop");
-                arguments.append(getTypeLetter(types.get(expr)));
-                visit(expr);
-                System.out.println(expr.getChild(0).getText() + " asdfjio;p");
-            }
+//        for (int i = 0; i < ctx.expression_list().expr().size(); i++) {
+//            System.out.println(ctx.expression_list().expr(i).getText() + " asdkl");
+//        }
+//        System.out.println(ctx.expression_list().getText() + " sadl;");
+//        for (ParseTree expr : ctx.expression_list().children) {
+//            if (!(",".equals(expr.getText()))) {
+////                System.out.println(expr.);
+//
+//                System.out.println(expr.getText() + " hjiop");
+//                arguments.append(getTypeLetter(types.get(expr)));
+//                visit(expr);
+//                System.out.println(expr.getChild(0).getText() + " asdfjio;p");
+//            }
+//        }
+        for (ParseTree child : ctx.expression_list().children) {
+            visit(child.);
         }
+
+//        for (int i = 0; i < ctx.expression_list().expr().size(); i++) {
+//               visit(ctx.)
+//        }
+
+
         Symbol symbol = scope.get(ctx).lookUp(name + "@" + arguments);
 
 
