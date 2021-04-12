@@ -181,6 +181,10 @@ public class Compiler {
         jasminBytecode.add(".super java/lang/Object");
         jasminBytecode.add("");
 
+        // This visitor is meant for generating the function definitions before generating the code for the main method
+        FunctionVisitor functionVisitor = new FunctionVisitor(jasminBytecode);
+        functionVisitor.visit(parseTree);
+
         // Main method
         jasminBytecode.add(".method public static main([Ljava/lang/String;)V");
         jasminBytecode.add(".limit stack 99");
