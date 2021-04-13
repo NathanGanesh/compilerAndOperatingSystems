@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import javax.xml.crypto.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static nl.saxion.cos.DataType.*;
 
@@ -293,24 +294,26 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 System.out.println(decl.getText() + "asdhjkl");
                 if (!(",".equals(decl.getText()))) {
                     DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
-                    if (datatype == UNKNOWN){
+                    if (datatype == UNKNOWN) {
                         throw new CompilerException("Datatype unknwon in fucntion 3");
                     }
                     name.append(symbolTable.getTypeLetter2(decl.getChild(0).getText()));
-                        symbolTable.add2(decl.getChild(1).getText(), datatype);
-                        arrayList.add(decl.getChild(1));
+                    symbolTable.add2(decl.getChild(1).getText(), datatype);
+                    arrayList.add(decl.getChild(1));
+                    System.out.println(decl.getChild(1) + "");
                     System.out.println(decl.getChild(1).getText() + " asddasd");
                 }
             }
         }
+        HashSet ha = new HashSet();
         for (int i = 0; i < arrayList.size(); i++) {
-            for (int i1 = 0; i1 < arrayList.size(); i1++) {
-                if (arrayList.get(i) == arrayList.get(i1)){
-                    throw new CompilerException("same shit in function");
-                }
-            }
+            ha.add(i);
         }
-
+        if (ha.size() != arrayList.size()) {
+            throw new CompilerException("mismatched");
+        }
+//        if (ctx.argument_list().declaration().size())
+        System.out.println(ctx.argument_list().declaration().size() + " sizer123");
         // Store the function name in the current scope.
         symbolTable.addGlobal(name.toString(), type);
         // Associate the this node with the current scope.
@@ -326,17 +329,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
             return VOID;
         }
         visit(ctx.expr());
-//        System.out.println(dataTypes.get(ctx.expr()));
-//        ctx.expr()
-//        System.out.println(ctx.expr().getText() + " adsl") ;
-//        dataTypes.get(visit(ctx));
-//        symbolTable.
-
-//        System.out.println(dataTypes.get(ctx.expr()) );
-//        System.out.println(ctx.expr().getText() + " alsjk");
-//       dataTypes.get()
-//        visit(ctx.expr());
-
         return null;
     }
 
@@ -352,25 +344,24 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         // Decorate the function name with argument types and return type. Do this prior to visiting the arguments
         // themselves as this will enter them in the symbol table of the new scope. Start with the arguments
         StringBuilder name = new StringBuilder(identifier + '@');
-
         if (ctx.expression_list() != null) {
             // Evaluate the arguments in the call first.
             visitChildren(ctx.expression_list());
-
             // Now that each of the expression types is known, check them against the function signature.
             for (ParseTree expr : ctx.expression_list().children) {
                 System.out.println(expr);
                 // Skip the comma that separates expressions.
                 if (!(",".equals(expr.getText()))) {
+                    char type = symbolTable.getTypeLetter(dataTypes.get(expr));
+                    if (type == '?'){
+                        throw new CompilerException("mismatched");
+                    }
                     name.append(symbolTable.getTypeLetter(dataTypes.get(expr)));
                 }
             }
         }
-
-        System.out.println("name2: " + name);
         Symbol symbol = symbolTable.lookUp(name.toString());
 
-        System.out.println(symbolTable.toString());
         if (symbol == null) {
             String typeDescritors = name.substring(name.toString().indexOf('@') + 1);
             StringBuilder message = new StringBuilder("function " + identifier + "(");

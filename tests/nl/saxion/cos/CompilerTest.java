@@ -351,9 +351,9 @@ public class CompilerTest {
     // TODO: 12-4-2021 todo
     @Test
     public void mustBadFive() throws Exception {
-        assertThrows(NullPointerException.class, () -> {
-            compile("testFiles/bad_weather/oekbad/test4f.sl", "Test4");
-        });
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/dupFunction", "Test4");
+        assertNull(code);
     }
 
 
