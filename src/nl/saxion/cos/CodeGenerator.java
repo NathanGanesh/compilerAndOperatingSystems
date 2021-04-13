@@ -8,6 +8,7 @@ import static nl.saxion.cos.DataType.*;
 
 public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
 
+    final String className = "prog";
     private final JasminBytecode jasminCode;
     private final ParseTreeProperty<SymbolTable> scope;
     boolean isScanInit = false;
@@ -114,7 +115,7 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         jasminCode.add(".limit stack 99");
         jasminCode.add(".limit locals 99");
 
-        visit(ctx.block());
+        visit(ctx.function_body());
 
         jasminCode.add(DataType.getFunctionReturn(ctx.TYPE().getText()) + "return");
         jasminCode.add(".end method");
@@ -179,9 +180,9 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
                 visit(child);
             }
         }
-        Symbol symbol = scope.get(ctx).lookUp(name+"@"+arguments);
-        jasminCode.add("invokestatic " + "test" + "/" + name + "(" +
-                arguments2 + ")" +getTypeLetter2(symbol.getType()));
+        Symbol symbol = scope.get(ctx).lookUp(name + "@" + arguments);
+        jasminCode.add("invokestatic " + className + "/" + name + "(" +
+                arguments2 + ")" + getTypeLetter2(symbol.getType()));
 
         return null;
     }

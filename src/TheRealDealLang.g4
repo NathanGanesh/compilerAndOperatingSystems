@@ -17,9 +17,9 @@ statement
     ;
 
 block
-    :   START_BLOCK statement* END_BLOCK
+    :   '{' statement* '}'
     ;
-
+function_body: '{' statement* '}';
 expr
     :
         value=INT                                                                           # intExpr
@@ -39,7 +39,7 @@ expr
     ;
 
 condition           : '(' expr+ ')';
-function_definition: TYPE IDENTIFIER '(' argument_list? ')' block;
+function_definition: TYPE IDENTIFIER '(' argument_list? ')' function_body;
 argument_list: declaration (',' declaration)*;
 declaration
     :   TYPE IDENTIFIER

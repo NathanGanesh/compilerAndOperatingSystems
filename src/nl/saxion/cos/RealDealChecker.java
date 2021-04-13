@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import javax.xml.crypto.Data;
 
+import java.util.ArrayList;
+
 import static nl.saxion.cos.DataType.*;
 
 public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
@@ -280,7 +282,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitFunction_definition(TheRealDealLangParser.Function_definitionContext ctx) {
         StringBuilder name = new StringBuilder(ctx.IDENTIFIER().getText());
         DataType type = symbolTable.getTypeEnum(ctx.TYPE().getText());
-
+        ArrayList arrayList = new ArrayList();
         // Decorate the function name with argument types and return type. Do this prior to visiting the arguments
         // themselves as this will enter them in the symbol table of the new scope. Start with the arguments.
         name.append('@');
@@ -290,43 +292,31 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 // Skip the comma that separates argument declarations.+
                 System.out.println(decl.getText() + "asdhjkl");
                 if (!(",".equals(decl.getText()))) {
-                    name.append(symbolTable.getTypeLetter2(decl.getChild(0).getText()));
-//                    System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText()) + " kl;sdf");
-//                    System.out.println(decl.getText() + " asdhjk");
-                    System.out.println(symbolTable.getTypeEnum(decl.getChild(0).getText()) + " jkl;");
                     DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
-//                    System.out.println(decl.getChild(0).getText() + " asd");
-                    System.out.println(decl.getChild(1).getText() + " kjkjkjljki");
-//                        symbolTable.addGlobal(decl.getChild(1).getText(), datatype);
+                    if (datatype == UNKNOWN){
+                        throw new CompilerException("Datatype unknwon in fucntion 3");
+                    }
+                    name.append(symbolTable.getTypeLetter2(decl.getChild(0).getText()));
                         symbolTable.add2(decl.getChild(1).getText(), datatype);
-//                    symbolTable.add(decl.getChild(1).getText(), datatype);
-                    dataTypes.put(decl.getChild(1), datatype);
-//                    scope.put(decl.getChild(1), symbolTable);
-                    System.out.println(decl.getText() + " askdokp");
-//                    visit(decl);
+                        arrayList.add(decl.getChild(1));
+                    System.out.println(decl.getChild(1).getText() + " asddasd");
                 }
             }
         }
-        System.out.println("name:" + name);
+        for (int i = 0; i < arrayList.size(); i++) {
+            for (int i1 = 0; i1 < arrayList.size(); i1++) {
+                if (arrayList.get(i) == arrayList.get(i1)){
+                    throw new CompilerException("same shit in function");
+                }
+            }
+        }
+
         // Store the function name in the current scope.
         symbolTable.addGlobal(name.toString(), type);
         // Associate the this node with the current scope.
-//        scope.put(ctx, symbolTable);
-
-//        symbolTable.add(ctx.TYPE(),);
-//        System.out.println(symbolTable.getTypeEnum(ctx.TYPE().getText()) + " asdl;");
-//        System.out.println((ctx.IDENTIFIER()) + "teper ");
-//        System.out.println(ctx.TYPE().getText()+" okikoko");
-
-//        symbolTable.add();
-//        System.out.println(ctx.TYPE().getText() + " TYPER");
-
-        // Visit the arguments and body in the new scope and restore the current scope afterwards.
-        symbolTable = symbolTable.openFunctionScope();
+        scope.put(ctx, symbolTable);
 
         visitChildren(ctx);
-        symbolTable = symbolTable.closeScope();
-
         return type;
     }
 
