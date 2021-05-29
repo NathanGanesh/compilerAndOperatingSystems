@@ -1,5 +1,7 @@
 package nl.saxion.cos;
 
+import nl.saxion.cos.exception.AssembleException;
+
 import java.util.List;
 
 

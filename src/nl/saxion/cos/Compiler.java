@@ -1,5 +1,7 @@
 package nl.saxion.cos;
 
+import nl.saxion.cos.exception.AssembleException;
+import nl.saxion.cos.exception.CompilerException;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;

@@ -1,6 +1,7 @@
 package nl.saxion.cos;
 
 import jasmin.ClassFile;
+import nl.saxion.cos.exception.AssembleException;
 
 import java.io.*;
 

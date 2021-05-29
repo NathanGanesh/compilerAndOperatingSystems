@@ -1,5 +1,6 @@
 package nl.saxion.cos;
 
+import nl.saxion.cos.exception.CompilerException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
@@ -280,37 +281,37 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visitVarDeclStmt(TheRealDealLangParser.VarDeclStmtContext ctx) {
-        String name = ctx.IDENTIFIER().getText();
-        Symbol symbol = scope.get(ctx).lookUp(name);
-
-        switch (types.get(ctx)) {
-            case INT:
-                jasminCode.add("ldc 0");
-                jasminCode.add("istore " + symbol.getLocalSlot());
-                break;
-            case DOUBLE:
-                jasminCode.add("ldc2_w 0.00");
-                jasminCode.add("dstore " + symbol.getLocalSlot());
-                break;
-            case BOOLEAN:
-                jasminCode.add("iconst_0");
-                jasminCode.add("istore " + symbol.getLocalSlot());
-                break;
-            case TEXT:
-                jasminCode.add("ldc \"empty\"");
-                jasminCode.add("astore " + symbol.getLocalSlot());
-                break;
-            default:
-                throw new CompilerException("Unknown type in print");
-        }
-//        if ((ctx.expr()) != null) {
-//            return visit(ctx.expr());
+//    @Override
+//    public Void visitVarDeclStmt(TheRealDealLangParser.VarDeclStmtContext ctx) {
+//        String name = ctx.IDENTIFIER().getText();
+//        Symbol symbol = scope.get(ctx).lookUp(name);
+//
+//        switch (types.get(ctx)) {
+//            case INT:
+//                jasminCode.add("ldc 0");
+//                jasminCode.add("istore " + symbol.getLocalSlot());
+//                break;
+//            case DOUBLE:
+//                jasminCode.add("ldc2_w 0.00");
+//                jasminCode.add("dstore " + symbol.getLocalSlot());
+//                break;
+//            case BOOLEAN:
+//                jasminCode.add("iconst_0");
+//                jasminCode.add("istore " + symbol.getLocalSlot());
+//                break;
+//            case TEXT:
+//                jasminCode.add("ldc \"empty\"");
+//                jasminCode.add("astore " + symbol.getLocalSlot());
+//                break;
+//            default:
+//                throw new CompilerException("Unknown type in print");
 //        }
-//        visit(ctx.expr());
-        return null;
-    }
+////        if ((ctx.expr()) != null) {
+////            return visit(ctx.expr());
+////        }
+////        visit(ctx.expr());
+//        return null;
+//    }
 
     @Override
     public Void visitScannerExpr(TheRealDealLangParser.ScannerExprContext ctx) {
@@ -368,24 +369,25 @@ public class CodeGenerator extends TheRealDealLangBaseVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
-        String endLabel = "end" + ctx.hashCode();
-        jasminCode.add("begin:");
-        //visit all conditions
-        for (int i = 0; i < ctx.condition().expr().size(); i++) {
-            visit(ctx.condition().expr(i));
-        }
-        jasminCode.add("iconst_1");
-        jasminCode.add("if_icmpne " + endLabel);
-        //vist all the statement inside the while
-        for (int i = 0; i < ctx.block().statement().size(); i++) {
-            visit(ctx.block().statement(i));
-        }
-        jasminCode.add("goto begin");
-        jasminCode.add(endLabel + ":");
-        return null;
-    }
+//
+//    @Override
+//    public Void visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
+//        String endLabel = "end" + ctx.hashCode();
+//        jasminCode.add("begin:");
+//        //visit all conditions
+//        for (int i = 0; i < ctx.condition().expr().size(); i++) {
+//            visit(ctx.condition().expr(i));
+//        }
+//        jasminCode.add("iconst_1");
+//        jasminCode.add("if_icmpne " + endLabel);
+//        //vist all the statement inside the while
+//        for (int i = 0; i < ctx.block().statement().size(); i++) {
+//            visit(ctx.block().statement(i));
+//        }
+//        jasminCode.add("goto begin");
+//        jasminCode.add(endLabel + ":");
+//        return null;
+//    }
 
 
     @Override

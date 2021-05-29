@@ -1,4 +1,4 @@
-package nl.saxion.cos;
+package nl.saxion.cos.exception;
 
 /**
  * Thrown when the generated Jasmin code is not accepted by Jasmin.

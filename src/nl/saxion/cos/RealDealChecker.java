@@ -1,9 +1,9 @@
 package nl.saxion.cos;
 
+import nl.saxion.cos.exception.CompilerException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import javax.xml.crypto.Data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,7 +44,16 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
 
     @Override
     public DataType visitIntExpr(TheRealDealLangParser.IntExprContext ctx) {
+        try {
+            Integer.parseInt(ctx.INT().getText());
+        } catch (NumberFormatException e) {
+            System.out.println("We can catch the NumberFormatException");
+        }
         return addType(ctx, INT);
+    }
+
+    public void intParsingMethod(String value) throws NumberFormatException {
+        int x = Integer.parseInt(value);
     }
 
 
@@ -111,7 +120,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (leftType != rightType) {
             throw new CompilerException("Left and right type are not the same!");
         }
-        System.out.println(leftType);
         if (!(leftType == DataType.DOUBLE || leftType == INT)) {
             throw new CompilerException("Not double or int");
         }
@@ -131,7 +139,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (!(leftType == DataType.DOUBLE || leftType == INT)) {
             throw new CompilerException("Not double or int");
         }
-        System.out.println(ctx.getText() + "here2");
         dataTypes.put(ctx, BOOLEAN);
         scope.put(ctx, symbolTable);
         return addType(ctx, BOOLEAN);
@@ -141,7 +148,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     public DataType visitLogicalExpr(TheRealDealLangParser.LogicalExprContext ctx) {
         DataType leftType = visit(ctx.left);
         DataType rightType = visit(ctx.right);
-        System.out.println("compare");
         if (leftType != BOOLEAN && rightType != BOOLEAN) {
             throw new CompilerException("Left or right not boolean");
         }
@@ -149,48 +155,46 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
             throw new CompilerException("Left and right type are not the same!");
         }
 
-        System.out.println(ctx.getText());
         scope.put(ctx, symbolTable);
         return addType(ctx, BOOLEAN);
     }
 
-    @Override
-    public DataType visitVarDeclStmt(TheRealDealLangParser.VarDeclStmtContext ctx) {
-        String name = ctx.IDENTIFIER().getText();
-        Symbol symbol = symbolTable.lookUp(name);
-        if (symbol != null) {
-            throw new CompilerException("Use of variable declare" + name + " Is already in use");
-        }
-
-//        if (ctx.expr() != null) {
-//            String type = ctx.TYPE().getText().toUpperCase();
-//            DataType tp2 = visit(ctx.expr());
-//            if (!tp2.toString().equals(type)) {
-//                throw new CompilerException("Incompatiple datatypes");
-//            }
+//    @Override
+//    public DataType visitVarDeclStmt(TheRealDealLangParser.VarDeclStmtContext ctx) {
+//        String name = ctx.IDENTIFIER().getText();
+//        Symbol symbol = symbolTable.lookUp(name);
+//        if (symbol != null) {
+//            throw new CompilerException("Use of variable declare" + name + " Is already in use");
 //        }
-
-        switch (ctx.type.getText()) {
-            case "int":
-                symbolTable.add(name, INT);
-                break;
-            case "Text":
-                symbolTable.add(name, TEXT);
-                break;
-            case "boolean":
-                symbolTable.add(name, BOOLEAN);
-                break;
-            case "double":
-                symbolTable.add(name, DataType.DOUBLE);
-                break;
-            default:
-                throw new CompilerException("Incompatiple datatypes");
-        }
-        System.out.println(ctx.getText() + "got added");
-        dataTypes.put(ctx, symbolTable.lookUp(name).getType());
-        scope.put(ctx, symbolTable);
-        return symbolTable.lookUp(name).getType();
-    }
+//
+////        if (ctx.expr() != null) {
+////            String type = ctx.TYPE().getText().toUpperCase();
+////            DataType tp2 = visit(ctx.expr());
+////            if (!tp2.toString().equals(type)) {
+////                throw new CompilerException("Incompatiple datatypes");
+////            }
+////        }
+//
+//        switch (ctx.type.getText()) {
+//            case "int":
+//                symbolTable.add(name, INT);
+//                break;
+//            case "Text":
+//                symbolTable.add(name, TEXT);
+//                break;
+//            case "boolean":
+//                symbolTable.add(name, BOOLEAN);
+//                break;
+//            case "double":
+//                symbolTable.add(name, DataType.DOUBLE);
+//                break;
+//            default:
+//                throw new CompilerException("Incompatiple datatypes");
+//        }
+//        dataTypes.put(ctx, symbolTable.lookUp(name).getType());
+//        scope.put(ctx, symbolTable);
+//        return symbolTable.lookUp(name).getType();
+//    }
 
 
     @Override
@@ -249,6 +253,10 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         DataType rightType = visit(ctx.right);
         if (leftType != rightType)
             throw new CompilerException("Left and right type are not the same!");
+        if (!(leftType == DataType.DOUBLE || leftType == INT)) {
+            throw new CompilerException("Not double or int");
+        }
+
         dataTypes.put(ctx, visit(ctx.right));
         scope.put(ctx, symbolTable);
         return addType(ctx, leftType);
@@ -291,7 +299,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         if (ctx.argument_list() != null) {
             for (ParseTree decl : ctx.argument_list().children) {
                 // Skip the comma that separates argument declarations.+
-                System.out.println(decl.getText() + "asdhjkl");
                 if (!(",".equals(decl.getText()))) {
                     DataType datatype = symbolTable.getTypeEnum(decl.getChild(0).getText());
                     if (datatype == UNKNOWN) {
@@ -300,8 +307,6 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                     name.append(symbolTable.getTypeLetter2(decl.getChild(0).getText()));
                     symbolTable.add2(decl.getChild(1).getText(), datatype);
                     arrayList.add(decl.getChild(1));
-                    System.out.println(decl.getChild(1) + "");
-                    System.out.println(decl.getChild(1).getText() + " asddasd");
                 }
             }
         }
@@ -313,7 +318,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
             throw new CompilerException("mismatched");
         }
 //        if (ctx.argument_list().declaration().size())
-        System.out.println(ctx.argument_list().declaration().size() + " sizer123");
+//        System.out.println(ctx.argument_list().declaration().size() + " sizer123");
         // Store the function name in the current scope.
         symbolTable.addGlobal(name.toString(), type);
         // Associate the this node with the current scope.
@@ -331,6 +336,9 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         visit(ctx.expr());
         return null;
     }
+
+//    3+"";
+//3+true;
 
     /**
      * Copy pasted from seminars
@@ -353,7 +361,7 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
                 // Skip the comma that separates expressions.
                 if (!(",".equals(expr.getText()))) {
                     char type = symbolTable.getTypeLetter(dataTypes.get(expr));
-                    if (type == '?'){
+                    if (type == '?') {
                         throw new CompilerException("mismatched");
                     }
                     name.append(symbolTable.getTypeLetter(dataTypes.get(expr)));
@@ -387,31 +395,31 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
         return symbol.getType();
     }
 
-    @Override
-    public DataType visitIfStatement(TheRealDealLangParser.IfStatementContext ctx) {
-        //check if everything is boolean
-        for (int i = 0; i < ctx.condition().expr().size(); i++) {
-            DataType type = visit(ctx.condition().expr(i));
-            if (type != BOOLEAN) {
-                throw new CompilerException("no type of boolean");
-            }
-        }
-        //if only statement
-        if (ctx.falseBlock == null) {
-            visit(ctx.trueBlock);
-            scope.put(ctx, symbolTable);
-        } else {
-            //else statement and if statement
-            visit(ctx.trueBlock);
-            visit(ctx.falseBlock);
-            dataTypes.put(ctx.trueBlock, BOOLEAN);
-            scope.put(ctx.trueBlock, symbolTable);
-
-            dataTypes.put(ctx.falseBlock, BOOLEAN);
-            scope.put(ctx.falseBlock, symbolTable);
-        }
-        return null;
-    }
+//    @Override
+//    public DataType visitIfStatement(TheRealDealLangParser.IfStatementContext ctx) {
+//        //check if everything is boolean
+//        for (int i = 0; i < ctx.condition().expr().size(); i++) {
+//            DataType type = visit(ctx.condition().expr(i));
+//            if (type != BOOLEAN) {
+//                throw new CompilerException("no type of boolean");
+//            }
+//        }
+//        //if only statement
+//        if (ctx.falseBlock == null) {
+//            visit(ctx.trueBlock);
+//            scope.put(ctx, symbolTable);
+//        } else {
+//            //else statement and if statement
+//            visit(ctx.trueBlock);
+//            visit(ctx.falseBlock);
+//            dataTypes.put(ctx.trueBlock, BOOLEAN);
+//            scope.put(ctx.trueBlock, symbolTable);
+//
+//            dataTypes.put(ctx.falseBlock, BOOLEAN);
+//            scope.put(ctx.falseBlock, symbolTable);
+//        }
+//        return null;
+//    }
 
     @Override
     public DataType visitExprStmt(TheRealDealLangParser.ExprStmtContext ctx) {
@@ -446,18 +454,18 @@ public class RealDealChecker extends TheRealDealLangBaseVisitor<DataType> {
     }
 
 
-    @Override
-    public DataType visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
-        //check if all the conditions are boolean
-        for (int i = 0; i < ctx.condition().expr().size(); i++) {
-            DataType type = visit(ctx.condition().expr(i));
-            if (type != BOOLEAN) {
-                throw new CompilerException("no type of boolean");
-            }
-        }
-        //visit the condition and the block
-        visit(ctx.condition());
-        visit(ctx.block());
-        return null;
-    }
+//    @Override
+//    public DataType visitWhileStmt(TheRealDealLangParser.WhileStmtContext ctx) {
+//        //check if all the conditions are boolean
+//        for (int i = 0; i < ctx.condition().expr().size(); i++) {
+//            DataType type = visit(ctx.condition().expr(i));
+//            if (type != BOOLEAN) {
+//                throw new CompilerException("no type of boolean");
+//            }
+//        }
+//        //visit the condition and the block
+//        visit(ctx.condition());
+//        visit(ctx.block());
+//        return null;
+//    }
 }

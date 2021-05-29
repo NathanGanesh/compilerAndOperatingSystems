@@ -6,7 +6,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/src/TheRealDealLang.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="C:\Users\kimjongun\IdeaProjects\triok\gen" />
+          <option name="outputDir" value="C:\Users\kimjongun\IdeaProjects\compilerAndOperatingSystems\gen" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="nl.saxion.cos" />
@@ -17,7 +17,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="11.0.4" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11.0.4" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

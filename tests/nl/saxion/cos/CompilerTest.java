@@ -1,11 +1,11 @@
 package nl.saxion.cos;
 
+import nl.saxion.cos.exception.AssembleException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.TextFromStandardInputStream;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -318,13 +318,25 @@ public class CompilerTest {
 
     @Test
     public void mustBadOne() throws Exception {
-//        assertThrows(NullPointerException.class, () -> {
-//            compile("testFiles/bad_weather/MustBadCases/if.txt", "Test4");
-//        });
         Compiler c = new Compiler();
         JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/if.txt", "Test4");
         assertNull(code); // Should not compile
     }
+
+    @Test
+    public void mustBadIf2() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/if2.txt", "Test4");
+        assertNull(code); // Should not compile
+    }
+
+    @Test
+    public void unableToParseInt() throws Exception {
+        Compiler c = new Compiler();
+        JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/UnableToParseInt.txt", "Test4");
+        assertNull(code); // Should not compile
+    }
+
 
     @Test
     public void mustBadTwo() throws Exception {
@@ -332,6 +344,7 @@ public class CompilerTest {
         JasminBytecode code = c.compileFile("testFiles/bad_weather/MustBadCases/while.txt", "Test4");
         assertNull(code);
     }
+
     @Test
     public void mustBadThree() throws Exception {
         Compiler c = new Compiler();
